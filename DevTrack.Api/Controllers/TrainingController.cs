@@ -22,6 +22,13 @@ public class TrainingController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("batch/{batchId}/schedule")]
+    public async Task<IActionResult> GetSchedule(int batchId)
+    {
+        var result = await _trainingService.GetScheduleAsync(batchId);
+        return Ok(result);
+    }
+
     [HttpGet("batch/{batchId}/attendance/{date}")]
     public async Task<IActionResult> GetAttendance(int batchId, string date)
     {

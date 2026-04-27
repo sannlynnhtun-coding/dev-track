@@ -14,6 +14,8 @@ public class TrainingApiService : ITrainingService
     }
 
     public Task<Result<List<DateOnly>>> GetClassDaysAsync(int batchId) => _api.GetClassDaysAsync(batchId);
+
+    public Task<Result<List<TrainingCalendarResponse>>> GetScheduleAsync(int batchId) => _api.GetScheduleAsync(batchId);
     
     public Task<Result<BulkAttendanceRequest>> GetAttendanceForDateAsync(int batchId, DateOnly date) 
         => _api.GetAttendanceForDateAsync(batchId, date.ToString("yyyy-MM-dd"));

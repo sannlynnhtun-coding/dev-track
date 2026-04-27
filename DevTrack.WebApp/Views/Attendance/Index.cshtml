@@ -14,8 +14,11 @@
         @if (selectedBatchId > 0)
         {
             <div class="flex items-center gap-3">
+                <a asp-action="Schedule" asp-route-batchId="@selectedBatchId" class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-6 transition-colors">
+                    View Schedule
+                </a>
                 <a asp-action="Mark" asp-route-batchId="@selectedBatchId" class="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-6 transition-colors">
-                    Mark Daily Attendance
+                    Quick Mark
                 </a>
             </div>
         }

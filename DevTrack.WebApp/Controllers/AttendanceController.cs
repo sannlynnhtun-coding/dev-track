@@ -30,6 +30,15 @@ public class AttendanceController : Controller
         return View(new List<DevTrack.Domain.Features.Training.Models.AttendanceSummaryResponse>());
     }
 
+    public async Task<IActionResult> Schedule(int batchId)
+    {
+        var schedule = await _trainingService.GetScheduleAsync(batchId);
+        var batch = await _batchService.GetBatchByIdAsync(batchId);
+
+        ViewBag.Batch = batch.Data;
+        return View(schedule.Data);
+    }
+
     public async Task<IActionResult> Mark(int batchId, string? date)
     {
         DateOnly targetDate;

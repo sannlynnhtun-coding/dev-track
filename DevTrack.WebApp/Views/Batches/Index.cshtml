@@ -44,7 +44,7 @@
                                         <a asp-action="ManageDevelopers" asp-route-id="@batch.Id" class="inline-flex items-center justify-center rounded-md text-xs font-medium border border-input bg-background hover:bg-slate-50 h-8 px-3 transition-colors">
                                             Manage Developers
                                         </a>
-                                        <a href="#" class="inline-flex items-center justify-center rounded-md text-xs font-medium text-slate-500 hover:text-slate-900 h-8 px-3 transition-colors">
+                                        <a asp-controller="Attendance" asp-action="Schedule" asp-route-batchId="@batch.Id" class="inline-flex items-center justify-center rounded-md text-xs font-medium border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 h-8 px-3 transition-colors">
                                             View Schedule
                                         </a>
                                     </div>

@@ -1,0 +1,98 @@
+@model List<DevTrack.Domain.Features.Training.Models.TrainingCalendarResponse>
+@{
+    var batch = ViewBag.Batch as DevTrack.Domain.Features.Batches.Models.BatchResponse;
+    ViewData["Title"] = $"Training Schedule - {batch?.BatchName}";
+}
+
+<div class="max-w-5xl mx-auto space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight">Training Schedule</h1>
+            <p class="text-muted-foreground">Comprehensive calendar for <strong>@batch?.BatchName</strong></p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a asp-controller="Batches" asp-action="Index" class="inline-flex items-center justify-center rounded-md text-sm font-medium border h-10 px-4 hover:bg-slate-50 transition-colors">
+                Back to Batches
+            </a>
+            <a asp-action="Index" asp-route-batchId="@batch?.Id" class="inline-flex items-center justify-center rounded-md text-sm font-medium border h-10 px-4 hover:bg-slate-50 transition-colors">
+                Attendance Summary
+            </a>
+        </div>
+    </div>
+
+    <div class="grid gap-4">
+        @foreach (var item in Model)
+        {
+            var isUpcoming = item.TrainingDate > DateOnly.FromDateTime(DateTime.Now);
+            var isToday = item.TrainingDate == DateOnly.FromDateTime(DateTime.Now);
+            
+            <div class="group relative flex items-center justify-between p-4 rounded-xl border bg-card hover:shadow-md transition-all @(isToday ? "ring-2 ring-primary bg-primary/5" : "")">
+                <div class="flex items-center gap-6">
+                    <div class="flex flex-col items-center justify-center w-16 h-16 rounded-lg bg-slate-100 group-hover:bg-slate-200 transition-colors @(isToday ? "bg-primary text-primary-foreground" : "")">
+                        <span class="text-xs font-bold uppercase">@item.TrainingDate.ToString("MMM")</span>
+                        <span class="text-2xl font-black">@item.TrainingDate.Day</span>
+                    </div>
+
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-lg">@item.TrainingDate.ToString("dddd, MMM dd")</h3>
+                            @if (isToday)
+                            {
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary text-primary-foreground">TODAY</span>
+                            }
+                        </div>
+                        
+                        <div class="flex items-center gap-3">
+                            @{
+                                var badgeClass = item.DayType switch
+                                {
+                                    "Class Day" => "bg-blue-100 text-blue-700",
+                                    "Assignment" => "bg-purple-100 text-purple-700",
+                                    "Holiday" => "bg-rose-100 text-rose-700",
+                                    "Close Day" => "bg-slate-100 text-slate-700",
+                                    _ => "bg-slate-100 text-slate-700"
+                                };
+                            }
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold @badgeClass">
+                                @item.DayType
+                            </span>
+
+                            @if (!string.IsNullOrEmpty(item.AssignmentTitle))
+                            {
+                                <span class="text-xs text-muted-foreground flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                    @item.AssignmentTitle
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    @if (item.IsAttendanceRequired)
+                    {
+                        @if (item.IsAttendanceMarked)
+                        {
+                            <div class="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                <span class="text-xs font-bold">Marked</span>
+                            </div>
+                        }
+                        else if (!isUpcoming || isToday)
+                        {
+                            <span class="text-xs font-medium text-rose-500 bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-100">Pending</span>
+                        }
+                    }
+
+                    @if (item.IsAttendanceRequired)
+                    {
+                        <a asp-action="Mark" asp-route-batchId="@item.BatchId" asp-route-date="@item.TrainingDate.ToString("yyyy-MM-dd")" 
+                           class="inline-flex items-center justify-center rounded-lg text-sm font-bold h-10 px-6 @(item.IsAttendanceMarked ? "border bg-white hover:bg-slate-50" : "bg-primary text-primary-foreground shadow-sm hover:opacity-90") transition-all">
+                            @(item.IsAttendanceMarked ? "Edit Attendance" : "Mark Attendance")
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

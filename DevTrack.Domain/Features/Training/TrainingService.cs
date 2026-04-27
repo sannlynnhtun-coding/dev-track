@@ -17,11 +17,40 @@ public class TrainingService : ITrainingService
     public async Task<Result<List<DateOnly>>> GetClassDaysAsync(int batchId)
     {
         var dates = await _db.TrainingCalendars
-            .Where(c => c.BatchId == batchId && c.DayType == "Class Day")
+            .Where(c => c.BatchId == batchId && c.IsAttendanceRequired == true)
             .Select(c => c.TrainingDate)
             .OrderByDescending(d => d)
             .ToListAsync();
         return Result<List<DateOnly>>.Success(dates);
+    }
+
+    public async Task<Result<List<TrainingCalendarResponse>>> GetScheduleAsync(int batchId)
+    {
+        var calendar = await _db.TrainingCalendars
+            .Where(c => c.BatchId == batchId)
+            .OrderBy(c => c.TrainingDate)
+            .ToListAsync();
+
+        var markedDates = await _db.AttendanceRecords
+            .Where(a => a.BatchId == batchId)
+            .Select(a => a.TrainingDate)
+            .Distinct()
+            .ToListAsync();
+
+        var result = calendar.Select(c => new TrainingCalendarResponse
+        {
+            Id = c.Id,
+            BatchId = c.BatchId,
+            TrainingDate = c.TrainingDate,
+            DayType = c.DayType,
+            IsAttendanceRequired = c.IsAttendanceRequired ?? false,
+            AssignmentTitle = c.AssignmentTitle,
+            AssignmentDueDate = c.AssignmentDueDate,
+            Remark = c.Remark,
+            IsAttendanceMarked = markedDates.Contains(c.TrainingDate)
+        }).ToList();
+
+        return Result<List<TrainingCalendarResponse>>.Success(result);
     }
 
     public async Task<Result<BulkAttendanceRequest>> GetAttendanceForDateAsync(int batchId, DateOnly date)
