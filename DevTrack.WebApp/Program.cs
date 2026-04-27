@@ -3,6 +3,7 @@ using DevTrack.WebApp.Services;
 using DevTrack.Domain.Features.Batches;
 using DevTrack.Domain.Features.Developers;
 using DevTrack.Domain.Features.Training;
+using DevTrack.Domain.Features.Dashboard;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,11 +19,14 @@ builder.Services.AddRefitClient<IDeveloperApiClient>()
     .ConfigureHttpClient(c => c.BaseAddress = new Uri(apiBaseUrl));
 builder.Services.AddRefitClient<ITrainingApiClient>()
     .ConfigureHttpClient(c => c.BaseAddress = new Uri(apiBaseUrl));
+builder.Services.AddRefitClient<IDashboardApiClient>()
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri(apiBaseUrl));
 
 // Feature Services (Api Versions)
 builder.Services.AddScoped<IBatchService, BatchApiService>();
 builder.Services.AddScoped<IDeveloperService, DeveloperApiService>();
 builder.Services.AddScoped<ITrainingService, TrainingApiService>();
+builder.Services.AddScoped<IDashboardService, DashboardApiService>();
 
 var app = builder.Build();
 

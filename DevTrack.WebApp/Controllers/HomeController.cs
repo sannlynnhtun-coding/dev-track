@@ -1,21 +1,24 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using DevTrack.Domain.Features.Dashboard;
+using DevTrack.Shared;
 using DevTrack.WebApp.Models;
 
 namespace DevTrack.WebApp.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly IDashboardService _dashboardService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(IDashboardService dashboardService)
     {
-        _logger = logger;
+        _dashboardService = dashboardService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var result = await _dashboardService.GetDashboardDataAsync();
+        return View(result.Data);
     }
 
     public IActionResult Privacy()

@@ -56,3 +56,54 @@ INSERT INTO AttendanceRecords (Id, BatchId, DeveloperId, TrainingDate, Status, R
 (7, 1, 3, '2026-03-04', 'Present', NULL, GETDATE()),
 (8, 1, 4, '2026-03-04', 'Present', NULL, GETDATE());
 SET IDENTITY_INSERT AttendanceRecords OFF;
+
+-- More Training Calendar entries (Batch 1: SQL and Tests, Batch 2: Initial Schedule)
+SET IDENTITY_INSERT TrainingCalendar ON;
+INSERT INTO TrainingCalendar (Id, BatchId, TrainingDate, DayType, IsAttendanceRequired, AssignmentTitle, AssignmentDueDate, Remark) VALUES
+(6, 1, '2026-03-09', 'Class Day', 1, NULL, NULL, 'SQL Fundamentals'),
+(7, 1, '2026-03-11', 'Assignment Day', 0, 'C# Logic Test', '2026-03-15', 'Weekly test'),
+(8, 1, '2026-03-13', 'Class Day', 1, NULL, NULL, 'SQL Advanced'),
+(9, 1, '2026-03-14', 'Weekend', 0, NULL, NULL, 'Saturday Holiday'),
+(10, 1, '2026-03-15', 'Weekend', 0, NULL, NULL, 'Sunday Holiday'),
+(11, 1, '2026-03-16', 'Close Day', 0, NULL, NULL, 'Public Holiday'),
+(12, 2, '2026-06-01', 'Class Day', 1, NULL, NULL, 'Intro to Web Development'),
+(13, 2, '2026-06-03', 'Class Day', 1, NULL, NULL, 'HTML5 & CSS3 Layouts'),
+(14, 2, '2026-06-05', 'Assignment Day', 0, 'First Portfolio Website', '2026-06-12', 'Design your own portfolio');
+SET IDENTITY_INSERT TrainingCalendar OFF;
+
+-- More Attendance Records
+SET IDENTITY_INSERT AttendanceRecords ON;
+INSERT INTO AttendanceRecords (Id, BatchId, DeveloperId, TrainingDate, Status, Remark, CreatedAt) VALUES
+(9, 1, 1, '2026-03-09', 'Present', NULL, GETDATE()),
+(10, 1, 3, '2026-03-09', 'Present', NULL, GETDATE()),
+(11, 1, 4, '2026-03-09', 'Present', NULL, GETDATE()),
+(12, 1, 1, '2026-03-13', 'Present', NULL, GETDATE()),
+(13, 1, 2, '2026-03-13', 'Late', 'Heavy traffic', GETDATE()),
+(14, 1, 3, '2026-03-13', 'Present', NULL, GETDATE()),
+(15, 1, 4, '2026-03-13', 'Present', NULL, GETDATE()),
+(16, 2, 5, '2026-06-01', 'Present', 'Excited to start', GETDATE()),
+(17, 2, 6, '2026-06-01', 'Present', NULL, GETDATE()),
+(18, 2, 7, '2026-06-01', 'Present', NULL, GETDATE()),
+(19, 2, 8, '2026-06-01', 'Present', NULL, GETDATE()),
+(20, 2, 5, '2026-06-03', 'Present', NULL, GETDATE()),
+(21, 2, 7, '2026-06-03', 'Present', NULL, GETDATE()),
+(22, 2, 8, '2026-06-03', 'Present', NULL, GETDATE());
+SET IDENTITY_INSERT AttendanceRecords OFF;
+
+-- Insert Leave Records
+SET IDENTITY_INSERT LeaveRecords ON;
+INSERT INTO LeaveRecords (Id, BatchId, DeveloperId, LeaveDate, Reason, ApprovedBy, ApprovedAt) VALUES
+(1, 1, 2, '2026-03-09', 'Sick leave - Flu', 'John Doe', GETDATE()),
+(2, 2, 6, '2026-06-03', 'Family Emergency', 'Jane Smith', GETDATE());
+SET IDENTITY_INSERT LeaveRecords OFF;
+
+-- Insert Assignment Submissions
+SET IDENTITY_INSERT AssignmentSubmissions ON;
+INSERT INTO AssignmentSubmissions (Id, BatchId, DeveloperId, TrainingDate, IsSubmitted, SubmissionDate, Score, Feedback) VALUES
+(1, 1, 1, '2026-03-11', 1, '2026-03-11 14:00:00', 95, 'Excellent logic implementation!'),
+(2, 1, 2, '2026-03-11', 1, '2026-03-12 09:30:00', 88, 'Good work, but watch out for edge cases.'),
+(3, 1, 3, '2026-03-11', 1, '2026-03-15 23:55:00', 70, 'Submitted just before deadline.'),
+(4, 2, 5, '2026-06-05', 1, '2026-06-06 10:00:00', 90, 'Very creative design!'),
+(5, 2, 6, '2026-06-05', 0, NULL, NULL, NULL);
+SET IDENTITY_INSERT AssignmentSubmissions OFF;
+

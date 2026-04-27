@@ -2,6 +2,7 @@ using DevTrack.Database.Entities;
 using DevTrack.Domain.Features.Batches;
 using DevTrack.Domain.Features.Developers;
 using DevTrack.Domain.Features.Training;
+using DevTrack.Domain.Features.Dashboard;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ builder.Services.AddDbContext<DevTrackDbContext>(options =>
 builder.Services.AddScoped<IBatchService, BatchService>();
 builder.Services.AddScoped<IDeveloperService, DeveloperService>();
 builder.Services.AddScoped<ITrainingService, TrainingService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 var app = builder.Build();
 
