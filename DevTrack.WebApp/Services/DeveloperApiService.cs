@@ -13,6 +13,6 @@ public class DeveloperApiService : IDeveloperService
         _api = api;
     }
 
-    public Task<Result<List<DeveloperResponse>>> GetDevelopersAsync() => _api.GetDevelopersAsync();
+    public Task<PagedResult<DeveloperResponse>> GetDevelopersAsync(PaginationRequest request) => _api.GetDevelopersAsync(request);
     public Task<Result<DeveloperResponse>> CreateDeveloperAsync(DeveloperRequest request) => _api.CreateDeveloperAsync(request);
 }

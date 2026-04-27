@@ -14,9 +14,16 @@ public class BatchService : IBatchService
         _db = db;
     }
 
-    public async Task<Result<List<BatchResponse>>> GetBatchesAsync()
+    public async Task<PagedResult<BatchResponse>> GetBatchesAsync(PaginationRequest request)
     {
-        var batches = await _db.Batches
+        var query = _db.Batches.AsNoTracking();
+        
+        var totalCount = await query.CountAsync();
+        
+        var batches = await query
+            .OrderByDescending(b => b.StartDate)
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize)
             .Select(b => new BatchResponse
             {
                 Id = b.Id,
@@ -28,7 +35,8 @@ public class BatchService : IBatchService
             })
             .ToListAsync();
 
-        return Result<List<BatchResponse>>.Success(batches);
+        var pagination = new Pagination(request.PageNumber, request.PageSize, totalCount);
+        return PagedResult<BatchResponse>.Success(batches, pagination);
     }
 
     public async Task<Result<BatchResponse>> GetBatchByIdAsync(int id)

@@ -1,5 +1,6 @@
 using DevTrack.Domain.Features.Training;
 using DevTrack.Domain.Features.Batches;
+using DevTrack.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevTrack.WebApp.Controllers;
@@ -15,28 +16,29 @@ public class AttendanceController : Controller
         _batchService = batchService;
     }
 
-    public async Task<IActionResult> Index(int? batchId)
+    public async Task<IActionResult> Index(int? batchId, int pageAt = 1)
     {
-        var batches = await _batchService.GetBatchesAsync();
+        // For the dropdown, we want a larger list or all batches.
+        var batches = await _batchService.GetBatchesAsync(new PaginationRequest { PageSize = 100 });
         ViewBag.Batches = batches.Data;
 
         if (batchId.HasValue)
         {
-            var summary = await _trainingService.GetAttendanceSummaryAsync(batchId.Value);
+            var summaryResult = await _trainingService.GetAttendanceSummaryAsync(batchId.Value, new PaginationRequest { PageNumber = pageAt });
             ViewBag.SelectedBatchId = batchId.Value;
-            return View(summary.Data);
+            return View(summaryResult);
         }
 
-        return View(new List<DevTrack.Domain.Features.Training.Models.AttendanceSummaryResponse>());
+        return View(null);
     }
 
-    public async Task<IActionResult> Schedule(int batchId)
+    public async Task<IActionResult> Schedule(int batchId, int pageAt = 1)
     {
-        var schedule = await _trainingService.GetScheduleAsync(batchId);
+        var scheduleResult = await _trainingService.GetScheduleAsync(batchId, new PaginationRequest { PageNumber = pageAt, PageSize = 10 });
         var batch = await _batchService.GetBatchByIdAsync(batchId);
 
         ViewBag.Batch = batch.Data;
-        return View(schedule.Data);
+        return View(scheduleResult);
     }
 
     public async Task<IActionResult> Mark(int batchId, string? date)

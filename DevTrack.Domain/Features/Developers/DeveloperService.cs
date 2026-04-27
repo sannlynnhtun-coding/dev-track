@@ -14,9 +14,16 @@ public class DeveloperService : IDeveloperService
         _db = db;
     }
 
-    public async Task<Result<List<DeveloperResponse>>> GetDevelopersAsync()
+    public async Task<PagedResult<DeveloperResponse>> GetDevelopersAsync(PaginationRequest request)
     {
-        var developers = await _db.Developers
+        var query = _db.Developers.AsNoTracking();
+        
+        var totalCount = await query.CountAsync();
+        
+        var developers = await query
+            .OrderBy(d => d.FullName)
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize)
             .Select(d => new DeveloperResponse
             {
                 Id = d.Id,
@@ -27,7 +34,8 @@ public class DeveloperService : IDeveloperService
             })
             .ToListAsync();
 
-        return Result<List<DeveloperResponse>>.Success(developers);
+        var pagination = new Pagination(request.PageNumber, request.PageSize, totalCount);
+        return PagedResult<DeveloperResponse>.Success(developers, pagination);
     }
 
     public async Task<Result<DeveloperResponse>> CreateDeveloperAsync(DeveloperRequest request)

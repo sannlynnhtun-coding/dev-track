@@ -1,5 +1,6 @@
 using DevTrack.Domain.Features.Batches;
 using DevTrack.Domain.Features.Batches.Models;
+using DevTrack.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevTrack.WebApp.Controllers;
@@ -13,10 +14,10 @@ public class BatchesController : Controller
         _batchService = batchService;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int pageAt = 1)
     {
-        var result = await _batchService.GetBatchesAsync();
-        return View(result.Data);
+        var result = await _batchService.GetBatchesAsync(new PaginationRequest { PageNumber = pageAt });
+        return View(result);
     }
 
     public IActionResult Create()

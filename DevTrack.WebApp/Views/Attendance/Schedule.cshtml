@@ -1,4 +1,4 @@
-@model List<DevTrack.Domain.Features.Training.Models.TrainingCalendarResponse>
+@model DevTrack.Shared.PagedResult<DevTrack.Domain.Features.Training.Models.TrainingCalendarResponse>
 @{
     var batch = ViewBag.Batch as DevTrack.Domain.Features.Batches.Models.BatchResponse;
     ViewData["Title"] = $"Training Schedule - {batch?.BatchName}";
@@ -21,7 +21,7 @@
     </div>
 
     <div class="grid gap-4">
-        @foreach (var item in Model)
+        @foreach (var item in Model.Data)
         {
             var isUpcoming = item.TrainingDate > DateOnly.FromDateTime(DateTime.Now);
             var isToday = item.TrainingDate == DateOnly.FromDateTime(DateTime.Now);
@@ -94,5 +94,8 @@
                 </div>
             </div>
         }
+    </div>
+    <div class="rounded-xl border overflow-hidden">
+        <partial name="_Pagination" model="Model.Pagination" />
     </div>
 </div>

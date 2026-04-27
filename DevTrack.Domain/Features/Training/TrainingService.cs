@@ -24,15 +24,23 @@ public class TrainingService : ITrainingService
         return Result<List<DateOnly>>.Success(dates);
     }
 
-    public async Task<Result<List<TrainingCalendarResponse>>> GetScheduleAsync(int batchId)
+    public async Task<PagedResult<TrainingCalendarResponse>> GetScheduleAsync(int batchId, PaginationRequest request)
     {
-        var calendar = await _db.TrainingCalendars
-            .Where(c => c.BatchId == batchId)
+        var query = _db.TrainingCalendars
+            .Where(c => c.BatchId == batchId);
+
+        var totalCount = await query.CountAsync();
+
+        var calendar = await query
             .OrderBy(c => c.TrainingDate)
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize)
             .ToListAsync();
 
+        var dates = calendar.Select(c => c.TrainingDate).ToList();
+
         var markedDates = await _db.AttendanceRecords
-            .Where(a => a.BatchId == batchId)
+            .Where(a => a.BatchId == batchId && dates.Contains(a.TrainingDate))
             .Select(a => a.TrainingDate)
             .Distinct()
             .ToListAsync();
@@ -50,7 +58,8 @@ public class TrainingService : ITrainingService
             IsAttendanceMarked = markedDates.Contains(c.TrainingDate)
         }).ToList();
 
-        return Result<List<TrainingCalendarResponse>>.Success(result);
+        var pagination = new Pagination(request.PageNumber, request.PageSize, totalCount);
+        return PagedResult<TrainingCalendarResponse>.Success(result, pagination);
     }
 
     public async Task<Result<BulkAttendanceRequest>> GetAttendanceForDateAsync(int batchId, DateOnly date)
@@ -110,18 +119,27 @@ public class TrainingService : ITrainingService
         return Result.Success("Attendance marked successfully.");
     }
 
-    public async Task<Result<List<AttendanceSummaryResponse>>> GetAttendanceSummaryAsync(int batchId)
+    public async Task<PagedResult<AttendanceSummaryResponse>> GetAttendanceSummaryAsync(int batchId, PaginationRequest request)
     {
         var totalClasses = await _db.TrainingCalendars
-            .CountAsync(c => c.BatchId == batchId && c.DayType == "Class Day");
+            .CountAsync(c => c.BatchId == batchId && (c.IsAttendanceRequired ?? false));
 
-        var developers = await _db.BatchDevelopers
+        var query = _db.BatchDevelopers
             .Where(bd => bd.BatchId == batchId)
-            .Select(bd => new { bd.Developer.Id, bd.Developer.FullName, bd.Developer.DeveloperCode })
+            .Select(bd => new { bd.Developer.Id, bd.Developer.FullName, bd.Developer.DeveloperCode });
+
+        var totalCount = await query.CountAsync();
+        
+        var developers = await query
+            .OrderBy(bd => bd.FullName)
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize)
             .ToListAsync();
 
+        var developerIds = developers.Select(d => d.Id).ToList();
+
         var attendance = await _db.AttendanceRecords
-            .Where(a => a.BatchId == batchId)
+            .Where(a => a.BatchId == batchId && developerIds.Contains(a.DeveloperId))
             .ToListAsync();
 
         var result = new List<AttendanceSummaryResponse>();
@@ -146,6 +164,7 @@ public class TrainingService : ITrainingService
             });
         }
 
-        return Result<List<AttendanceSummaryResponse>>.Success(result.OrderBy(r => r.FullName).ToList());
+        var pagination = new Pagination(request.PageNumber, request.PageSize, totalCount);
+        return PagedResult<AttendanceSummaryResponse>.Success(result, pagination);
     }
 }

@@ -15,12 +15,12 @@ public class TrainingApiService : ITrainingService
 
     public Task<Result<List<DateOnly>>> GetClassDaysAsync(int batchId) => _api.GetClassDaysAsync(batchId);
 
-    public Task<Result<List<TrainingCalendarResponse>>> GetScheduleAsync(int batchId) => _api.GetScheduleAsync(batchId);
+    public Task<PagedResult<TrainingCalendarResponse>> GetScheduleAsync(int batchId, PaginationRequest request) => _api.GetScheduleAsync(batchId, request);
     
     public Task<Result<BulkAttendanceRequest>> GetAttendanceForDateAsync(int batchId, DateOnly date) 
         => _api.GetAttendanceForDateAsync(batchId, date.ToString("yyyy-MM-dd"));
 
     public Task<Result> MarkBulkAttendanceAsync(BulkAttendanceRequest request) => _api.MarkBulkAttendanceAsync(request);
     
-    public Task<Result<List<AttendanceSummaryResponse>>> GetAttendanceSummaryAsync(int batchId) => _api.GetAttendanceSummaryAsync(batchId);
+    public Task<PagedResult<AttendanceSummaryResponse>> GetAttendanceSummaryAsync(int batchId, PaginationRequest request) => _api.GetAttendanceSummaryAsync(batchId, request);
 }

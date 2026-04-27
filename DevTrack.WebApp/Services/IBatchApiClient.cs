@@ -7,7 +7,7 @@ namespace DevTrack.WebApp.Services;
 public interface IBatchApiClient
 {
     [Get("/api/batches")]
-    Task<Result<List<BatchResponse>>> GetBatchesAsync();
+    Task<PagedResult<BatchResponse>> GetBatchesAsync(PaginationRequest request);
 
     [Get("/api/batches/{id}")]
     Task<Result<BatchResponse>> GetBatchByIdAsync(int id);

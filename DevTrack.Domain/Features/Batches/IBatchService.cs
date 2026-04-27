@@ -5,7 +5,7 @@ namespace DevTrack.Domain.Features.Batches;
 
 public interface IBatchService
 {
-    Task<Result<List<BatchResponse>>> GetBatchesAsync();
+    Task<PagedResult<BatchResponse>> GetBatchesAsync(PaginationRequest request);
     Task<Result<BatchResponse>> GetBatchByIdAsync(int id);
     Task<Result<BatchResponse>> CreateBatchAsync(BatchRequest request);
     Task<Result<List<BatchAssignmentModel>>> GetBatchDevelopersAsync(int batchId);

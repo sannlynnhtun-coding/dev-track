@@ -1,5 +1,6 @@
 using DevTrack.Domain.Features.Batches;
 using DevTrack.Domain.Features.Batches.Models;
+using DevTrack.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevTrack.Api.Controllers;
@@ -16,9 +17,9 @@ public class BatchesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetBatches()
+    public async Task<IActionResult> GetBatches([FromQuery] PaginationRequest request)
     {
-        var result = await _batchService.GetBatchesAsync();
+        var result = await _batchService.GetBatchesAsync(request);
         return Ok(result);
     }
 

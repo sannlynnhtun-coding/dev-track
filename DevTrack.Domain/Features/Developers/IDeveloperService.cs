@@ -5,6 +5,6 @@ namespace DevTrack.Domain.Features.Developers;
 
 public interface IDeveloperService
 {
-    Task<Result<List<DeveloperResponse>>> GetDevelopersAsync();
+    Task<PagedResult<DeveloperResponse>> GetDevelopersAsync(PaginationRequest request);
     Task<Result<DeveloperResponse>> CreateDeveloperAsync(DeveloperRequest request);
 }

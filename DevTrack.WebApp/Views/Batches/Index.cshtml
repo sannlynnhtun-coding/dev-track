@@ -1,4 +1,4 @@
-@model List<DevTrack.Domain.Features.Batches.Models.BatchResponse>
+@model DevTrack.Shared.PagedResult<DevTrack.Domain.Features.Batches.Models.BatchResponse>
 @{
     ViewData["Title"] = "Training Batches";
 }
@@ -26,9 +26,9 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y">
-                    @if (Model != null && Model.Any())
+                    @if (Model != null && Model.Data.Any())
                     {
-                        @foreach (var batch in Model)
+                        @foreach (var batch in Model.Data)
                         {
                             <tr class="hover:bg-slate-50/50 transition-colors">
                                 <td class="p-4 align-middle font-medium">@batch.BatchName</td>
@@ -63,5 +63,6 @@
                 </tbody>
             </table>
         </div>
+        <partial name="_Pagination" model="Model.Pagination" />
     </div>
 </div>

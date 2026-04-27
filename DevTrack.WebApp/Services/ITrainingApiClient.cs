@@ -10,7 +10,7 @@ public interface ITrainingApiClient
     Task<Result<List<DateOnly>>> GetClassDaysAsync(int batchId);
 
     [Get("/api/training/batch/{batchId}/schedule")]
-    Task<Result<List<TrainingCalendarResponse>>> GetScheduleAsync(int batchId);
+    Task<PagedResult<TrainingCalendarResponse>> GetScheduleAsync(int batchId, PaginationRequest request);
 
     [Get("/api/training/batch/{batchId}/attendance/{date}")]
     Task<Result<BulkAttendanceRequest>> GetAttendanceForDateAsync(int batchId, string date);
@@ -19,5 +19,5 @@ public interface ITrainingApiClient
     Task<Result> MarkBulkAttendanceAsync(BulkAttendanceRequest request);
 
     [Get("/api/training/batch/{batchId}/summary")]
-    Task<Result<List<AttendanceSummaryResponse>>> GetAttendanceSummaryAsync(int batchId);
+    Task<PagedResult<AttendanceSummaryResponse>> GetAttendanceSummaryAsync(int batchId, PaginationRequest request);
 }

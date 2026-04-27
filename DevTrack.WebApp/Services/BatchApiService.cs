@@ -13,7 +13,7 @@ public class BatchApiService : IBatchService
         _api = api;
     }
 
-    public Task<Result<List<BatchResponse>>> GetBatchesAsync() => _api.GetBatchesAsync();
+    public Task<PagedResult<BatchResponse>> GetBatchesAsync(PaginationRequest request) => _api.GetBatchesAsync(request);
     public Task<Result<BatchResponse>> GetBatchByIdAsync(int id) => _api.GetBatchByIdAsync(id);
     public Task<Result<BatchResponse>> CreateBatchAsync(BatchRequest request) => _api.CreateBatchAsync(request);
     public Task<Result<List<BatchAssignmentModel>>> GetBatchDevelopersAsync(int batchId) => _api.GetBatchDevelopersAsync(batchId);

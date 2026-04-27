@@ -1,4 +1,4 @@
-@model List<DevTrack.Domain.Features.Developers.Models.DeveloperResponse>
+@model DevTrack.Shared.PagedResult<DevTrack.Domain.Features.Developers.Models.DeveloperResponse>
 @{
     ViewData["Title"] = "Developers";
 }
@@ -27,9 +27,9 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y">
-                    @if (Model != null && Model.Any())
+                    @if (Model != null && Model.Data.Any())
                     {
-                        @foreach (var dev in Model)
+                        @foreach (var dev in Model.Data)
                         {
                             <tr class="hover:bg-slate-50/50 transition-colors">
                                 <td class="p-4 align-middle text-muted-foreground font-mono text-xs">@dev.DeveloperCode</td>
@@ -62,5 +62,6 @@
                 </tbody>
             </table>
         </div>
+        <partial name="_Pagination" model="Model.Pagination" />
     </div>
 </div>

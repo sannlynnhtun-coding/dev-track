@@ -6,8 +6,8 @@ namespace DevTrack.Domain.Features.Training;
 public interface ITrainingService
 {
     Task<Result<List<DateOnly>>> GetClassDaysAsync(int batchId);
-    Task<Result<List<TrainingCalendarResponse>>> GetScheduleAsync(int batchId);
+    Task<PagedResult<TrainingCalendarResponse>> GetScheduleAsync(int batchId, PaginationRequest request);
     Task<Result<BulkAttendanceRequest>> GetAttendanceForDateAsync(int batchId, DateOnly date);
     Task<Result> MarkBulkAttendanceAsync(BulkAttendanceRequest request);
-    Task<Result<List<AttendanceSummaryResponse>>> GetAttendanceSummaryAsync(int batchId);
+    Task<PagedResult<AttendanceSummaryResponse>> GetAttendanceSummaryAsync(int batchId, PaginationRequest request);
 }

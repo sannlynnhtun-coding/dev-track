@@ -1,5 +1,6 @@
 using DevTrack.Domain.Features.Training;
 using DevTrack.Domain.Features.Training.Models;
+using DevTrack.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevTrack.Api.Controllers;
@@ -23,9 +24,9 @@ public class TrainingController : ControllerBase
     }
 
     [HttpGet("batch/{batchId}/schedule")]
-    public async Task<IActionResult> GetSchedule(int batchId)
+    public async Task<IActionResult> GetSchedule(int batchId, [FromQuery] PaginationRequest request)
     {
-        var result = await _trainingService.GetScheduleAsync(batchId);
+        var result = await _trainingService.GetScheduleAsync(batchId, request);
         return Ok(result);
     }
 
@@ -48,9 +49,9 @@ public class TrainingController : ControllerBase
     }
 
     [HttpGet("batch/{batchId}/summary")]
-    public async Task<IActionResult> GetAttendanceSummary(int batchId)
+    public async Task<IActionResult> GetAttendanceSummary(int batchId, [FromQuery] PaginationRequest request)
     {
-        var result = await _trainingService.GetAttendanceSummaryAsync(batchId);
+        var result = await _trainingService.GetAttendanceSummaryAsync(batchId, request);
         return Ok(result);
     }
 }

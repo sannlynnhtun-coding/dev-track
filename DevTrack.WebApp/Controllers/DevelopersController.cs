@@ -1,5 +1,6 @@
 using DevTrack.Domain.Features.Developers;
 using DevTrack.Domain.Features.Developers.Models;
+using DevTrack.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevTrack.WebApp.Controllers;
@@ -13,10 +14,10 @@ public class DevelopersController : Controller
         _developerService = developerService;
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int pageAt = 1)
     {
-        var result = await _developerService.GetDevelopersAsync();
-        return View(result.Data);
+        var result = await _developerService.GetDevelopersAsync(new PaginationRequest { PageNumber = pageAt });
+        return View(result);
     }
 
     public IActionResult Create()

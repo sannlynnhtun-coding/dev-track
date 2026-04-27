@@ -7,7 +7,7 @@ namespace DevTrack.WebApp.Services;
 public interface IDeveloperApiClient
 {
     [Get("/api/developers")]
-    Task<Result<List<DeveloperResponse>>> GetDevelopersAsync();
+    Task<PagedResult<DeveloperResponse>> GetDevelopersAsync(PaginationRequest request);
 
     [Post("/api/developers")]
     Task<Result<DeveloperResponse>> CreateDeveloperAsync(DeveloperRequest request);

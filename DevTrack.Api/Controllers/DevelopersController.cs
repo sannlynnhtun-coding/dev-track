@@ -1,5 +1,6 @@
 using DevTrack.Domain.Features.Developers;
 using DevTrack.Domain.Features.Developers.Models;
+using DevTrack.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevTrack.Api.Controllers;
@@ -16,9 +17,9 @@ public class DevelopersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetDevelopers()
+    public async Task<IActionResult> GetDevelopers([FromQuery] PaginationRequest request)
     {
-        var result = await _developerService.GetDevelopersAsync();
+        var result = await _developerService.GetDevelopersAsync(request);
         return Ok(result);
     }
 
