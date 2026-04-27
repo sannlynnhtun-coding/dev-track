@@ -1,0 +1,114 @@
+@model List<DevTrack.Domain.Features.Training.Models.AttendanceSummaryResponse>
+@{
+    ViewData["Title"] = "Attendance Dashboard";
+    var batches = ViewBag.Batches as List<DevTrack.Domain.Features.Batches.Models.BatchResponse>;
+    int? selectedBatchId = ViewBag.SelectedBatchId as int?;
+}
+
+<div class="space-y-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight">Attendance Analytics</h1>
+            <p class="text-muted-foreground mt-2">Track eligibility and participation across all training batches.</p>
+        </div>
+        @if (selectedBatchId > 0)
+        {
+            <div class="flex items-center gap-3">
+                <a asp-action="Mark" asp-route-batchId="@selectedBatchId" class="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-6 transition-colors">
+                    Mark Daily Attendance
+                </a>
+            </div>
+        }
+    </div>
+        <form asp-action="Index" method="get" class="flex items-center gap-2">
+            <select name="batchId" onchange="this.form.submit()" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <option value="">Select a Batch</option>
+                @if (batches != null)
+                {
+                    @foreach (var batch in batches)
+                    {
+                        @if (selectedBatchId == batch.Id)
+                        {
+                            <option value="@batch.Id" selected>@batch.BatchName</option>
+                        }
+                        else
+                        {
+                            <option value="@batch.Id">@batch.BatchName</option>
+                        }
+                    }
+                }
+            </select>
+        </form>
+    </div>
+
+    @if (selectedBatchId.HasValue)
+    {
+        <div class="rounded-xl border bg-card text-card-foreground shadow overflow-hidden">
+            <div class="p-0">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-50 border-b">
+                        <tr>
+                            <th class="h-12 px-4 text-left align-middle font-semibold text-muted-foreground">Developer</th>
+                            <th class="h-12 px-4 text-center align-middle font-semibold text-muted-foreground">Present</th>
+                            <th class="h-12 px-4 text-center align-middle font-semibold text-muted-foreground">Absent</th>
+                            <th class="h-12 px-4 text-center align-middle font-semibold text-muted-foreground">Leave</th>
+                            <th class="h-12 px-4 text-center align-middle font-semibold text-muted-foreground">Percentage</th>
+                            <th class="h-12 px-4 text-right align-middle font-semibold text-muted-foreground">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr class="hover:bg-slate-50/50 transition-colors">
+                                    <td class="p-4 align-middle font-medium">@item.FullName</td>
+                                    <td class="p-4 align-middle text-center">@item.PresentDays</td>
+                                    <td class="p-4 align-middle text-center">@item.AbsentDays</td>
+                                    <td class="p-4 align-middle text-center">@item.LeaveDays</td>
+                                    <td class="p-4 align-middle text-center">
+                                        <div class="flex items-center gap-2 justify-center">
+                                            <div class="w-16 bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                                <div class="@(item.AttendancePercent >= 80 ? "bg-emerald-500" : (item.AttendancePercent >= 70 ? "bg-amber-500" : "bg-destructive")) h-full" style="width: @item.AttendancePercent%"></div>
+                                            </div>
+                                            <span class="font-mono text-xs font-semibold">@item.AttendancePercent.ToString("0.0")%</span>
+                                        </div>
+                                    </td>
+                                    <td class="p-4 align-middle text-right">
+                                        @if (item.Status == "Eligible")
+                                        {
+                                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-emerald-100 text-emerald-800">Eligible</span>
+                                        }
+                                        else if (item.Status == "Warning")
+                                        {
+                                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-amber-100 text-amber-800">Warning</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-destructive/10 text-destructive">Not Eligible</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="p-8 text-center text-muted-foreground">
+                                    No attendance data available for this batch.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="flex flex-col items-center justify-center py-20 bg-white border border-dashed rounded-xl space-y-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="text-slate-300"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+            <p class="text-slate-500">Please select a batch to view attendance analytics.</p>
+        </div>
+    }
+</div>

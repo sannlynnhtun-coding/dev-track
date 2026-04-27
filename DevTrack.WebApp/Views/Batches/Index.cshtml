@@ -1,0 +1,67 @@
+@model List<DevTrack.Domain.Features.Batches.Models.BatchResponse>
+@{
+    ViewData["Title"] = "Training Batches";
+}
+
+<div class="space-y-8">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight">Training Batches</h1>
+            <p class="text-muted-foreground">Manage your training groups and schedules.</p>
+        </div>
+        <a asp-action="Create" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-6 py-2">
+            Create New Batch
+        </a>
+    </div>
+
+    <div class="rounded-xl border bg-card text-card-foreground shadow overflow-hidden">
+        <div class="p-0">
+            <table class="w-full text-sm">
+                <thead class="bg-slate-50 border-b">
+                    <tr>
+                        <th class="h-12 px-4 text-left align-middle font-semibold text-muted-foreground">Batch Name</th>
+                        <th class="h-12 px-4 text-left align-middle font-semibold text-muted-foreground">Mentor</th>
+                        <th class="h-12 px-4 text-left align-middle font-semibold text-muted-foreground">Duration</th>
+                        <th class="h-12 px-4 text-right align-middle font-semibold text-muted-foreground">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var batch in Model)
+                        {
+                            <tr class="hover:bg-slate-50/50 transition-colors">
+                                <td class="p-4 align-middle font-medium">@batch.BatchName</td>
+                                <td class="p-4 align-middle text-muted-foreground">@batch.MentorName</td>
+                                <td class="p-4 align-middle">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm">@batch.DateRange</span>
+                                        <span class="text-xs text-muted-foreground">@batch.TrainingMonths Months</span>
+                                    </div>
+                                </td>
+                                <td class="p-4 align-middle text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <a asp-action="ManageDevelopers" asp-route-id="@batch.Id" class="inline-flex items-center justify-center rounded-md text-xs font-medium border border-input bg-background hover:bg-slate-50 h-8 px-3 transition-colors">
+                                            Manage Developers
+                                        </a>
+                                        <a href="#" class="inline-flex items-center justify-center rounded-md text-xs font-medium text-slate-500 hover:text-slate-900 h-8 px-3 transition-colors">
+                                            View Schedule
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="p-8 text-center text-muted-foreground">
+                                No batches found. Create your first batch to get started.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

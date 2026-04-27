@@ -1,0 +1,97 @@
+@model DevTrack.Domain.Features.Training.Models.BulkAttendanceRequest
+@{
+    var batch = ViewBag.Batch as DevTrack.Domain.Features.Batches.Models.BatchResponse;
+    var classDays = ViewBag.ClassDays as List<DateOnly>;
+    var targetDate = (DateOnly)ViewBag.TargetDate;
+    ViewData["Title"] = $"Mark Attendance - {batch?.BatchName}";
+}
+
+<div class="max-w-5xl mx-auto space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight">Record Attendance</h1>
+            <p class="text-muted-foreground">Log daily participation for <strong>@batch?.BatchName</strong></p>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="relative">
+                <select onchange="location.href='?batchId=@batch.Id&date=' + this.value" class="h-10 pl-3 pr-10 text-sm border rounded-md bg-white appearance-none focus:ring-2 focus:ring-primary w-48">
+                    @foreach (var day in classDays)
+                    {
+                        <!option value="@day.ToString("yyyy-MM-dd")" @(day == targetDate ? "selected" : "")>
+                            @day.ToString("MMM dd, yyyy")
+                        </!option>
+                    }
+                </select>
+                <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+            </div>
+            <a asp-action="Index" asp-route-batchId="@batch.Id" class="inline-flex items-center justify-center rounded-md text-sm font-medium border h-10 px-4 hover:bg-slate-50 transition-colors">
+                Cancel
+            </a>
+        </div>
+    </div>
+
+    @if (targetDate > DateOnly.FromDateTime(DateTime.Now))
+    {
+        <div class="rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-800 flex gap-3 items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            <p class="text-sm font-medium">You are viewing a future date. Attendance marked here will be pre-filled.</p>
+        </div>
+    }
+
+    <form asp-action="Mark" method="post">
+        <input type="hidden" asp-for="BatchId" />
+        <input type="hidden" asp-for="TrainingDate" />
+
+        <div class="rounded-xl border bg-card shadow-sm overflow-hidden">
+            <table class="w-full text-sm">
+                <thead class="bg-slate-50 border-b">
+                    <tr>
+                        <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground w-[300px]">Developer</th>
+                        <th class="h-12 px-4 text-center align-middle font-medium text-muted-foreground">Attendance Status</th>
+                        <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    @for (int i = 0; i < Model.Markings.Count; i++)
+                    {
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="p-4 align-middle">
+                                <input type="hidden" asp-for="Markings[i].DeveloperId" />
+                                <input type="hidden" asp-for="Markings[i].FullName" />
+                                <div class="flex items-center gap-3">
+                                    <div class="flex h-8 w-8 shrink-0 overflow-hidden rounded-full bg-primary/10 text-primary items-center justify-center font-bold text-xs">
+                                        @Model.Markings[i].FullName.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <span class="font-medium">@Model.Markings[i].FullName</span>
+                                </div>
+                            </td>
+                            <td class="p-4 align-middle">
+                                <div class="flex items-center justify-center gap-px rounded-lg border p-1 bg-white w-fit mx-auto shadow-sm">
+                                    @foreach (var status in new[] { "Present", "Absent", "Late", "Leave" })
+                                    {
+                                        <label class="relative flex items-center justify-center px-4 py-1.5 rounded-md cursor-pointer transition-all hover:bg-slate-50 group">
+                                            <input type="radio" asp-for="Markings[i].Status" value="@status" class="peer sr-only" />
+                                            <span class="text-xs font-semibold peer-checked:text-primary transition-colors">@status</span>
+                                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary peer-checked:bg-primary/5 rounded-md -z-10 transition-all"></div>
+                                        </label>
+                                    }
+                                </div>
+                            </td>
+                            <td class="p-4 align-middle">
+                                <input asp-for="Markings[i].Remark" placeholder="Optional notes..." class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-xs shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex items-center justify-end gap-4 mt-8">
+            <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-primary text-primary-foreground shadow hover:bg-primary/90 h-11 px-12 py-2">
+                Commit Daily Records
+            </button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,66 @@
+@model List<DevTrack.Domain.Features.Developers.Models.DeveloperResponse>
+@{
+    ViewData["Title"] = "Developers";
+}
+
+<div class="space-y-8">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight">Developers</h1>
+            <p class="text-muted-foreground">Directory of all trainees and their status.</p>
+        </div>
+        <a asp-action="Create" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-6 py-2">
+            Add Developer
+        </a>
+    </div>
+
+    <div class="rounded-xl border bg-card text-card-foreground shadow overflow-hidden">
+        <div class="p-0">
+            <table class="w-full text-sm">
+                <thead class="bg-slate-50 border-b">
+                    <tr>
+                        <th class="h-12 px-4 text-left align-middle font-semibold text-muted-foreground">Code</th>
+                        <th class="h-12 px-4 text-left align-middle font-semibold text-muted-foreground">Full Name</th>
+                        <th class="h-12 px-4 text-left align-middle font-semibold text-muted-foreground">Email</th>
+                        <th class="h-12 px-4 text-left align-middle font-semibold text-muted-foreground">Status</th>
+                        <th class="h-12 px-4 text-right align-middle font-semibold text-muted-foreground">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var dev in Model)
+                        {
+                            <tr class="hover:bg-slate-50/50 transition-colors">
+                                <td class="p-4 align-middle text-muted-foreground font-mono text-xs">@dev.DeveloperCode</td>
+                                <td class="p-4 align-middle font-medium">@dev.FullName</td>
+                                <td class="p-4 align-middle text-muted-foreground">@dev.Email</td>
+                                <td class="p-4 align-middle">
+                                    @if (dev.IsActive)
+                                    {
+                                        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-emerald-100 text-emerald-800">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-slate-100 text-slate-800">Inactive</span>
+                                    }
+                                </td>
+                                <td class="p-4 align-middle text-right">
+                                    <button class="text-primary hover:underline font-medium px-3 py-1">Details</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="p-8 text-center text-muted-foreground">
+                                No developers found. Add your first developer.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

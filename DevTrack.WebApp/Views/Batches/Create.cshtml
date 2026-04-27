@@ -1,0 +1,79 @@
+@model DevTrack.Domain.Features.Batches.Models.BatchRequest
+@{
+    ViewData["Title"] = "Create Training Batch";
+}
+
+<div class="max-w-2xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold tracking-tight">Create Batch</h1>
+        <p class="text-muted-foreground mt-2">Initialize a new training session and generate its calendar automatically.</p>
+    </div>
+
+    <form asp-action="Create" method="post" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2 col-span-2">
+                <label asp-for="BatchName" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Batch Name</label>
+                <input asp-for="BatchName" placeholder="e.g. .NET Full Stack Batch 01" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                <span asp-validation-for="BatchName" class="text-xs text-destructive"></span>
+            </div>
+
+            <div class="space-y-2">
+                <label asp-for="MentorName" class="text-sm font-medium">Mentor Name</label>
+                <input asp-for="MentorName" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+            </div>
+
+            <div class="space-y-2">
+                <label asp-for="TrainingMonths" class="text-sm font-medium">Duration (Months)</label>
+                <input asp-for="TrainingMonths" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+            </div>
+
+            <div class="space-y-2">
+                <label asp-for="StartDate" class="text-sm font-medium">Start Date</label>
+                <input asp-for="StartDate" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+            </div>
+
+            <div class="space-y-2">
+                <label asp-for="EndDate" class="text-sm font-medium">End Date</label>
+                <input asp-for="EndDate" type="date" value="@DateTime.Now.AddMonths(3).ToString("yyyy-MM-dd")" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+            </div>
+        </div>
+
+        <div class="space-y-4 rounded-lg border p-4 bg-slate-50/50">
+            <label class="text-sm font-medium">Training Days Configuration</label>
+            <div class="flex flex-wrap gap-3">
+                @{
+                    var days = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>().ToList();
+                    // Shift Sunday to end if needed, but let's keep it simple
+                    foreach (var day in days)
+                    {
+                        <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-md border cursor-pointer hover:border-primary transition-colors">
+                            <input type="checkbox" name="SelectedDays" value="@day" class="rounded text-primary" />
+                            <span class="text-sm font-medium">@day.ToString().Substring(0, 3)</span>
+                        </label>
+                    }
+                }
+            </div>
+            <p class="text-[10px] text-muted-foreground italic">Selected days will be marked as "Class Days" in the generated calendar. Attendance will be required for these days.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+            <div class="space-y-2">
+                <label asp-for="MinAttendancePercent" class="text-sm font-medium">Target Attendance %</label>
+                <input asp-for="MinAttendancePercent" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+            </div>
+            <div class="space-y-2">
+                <label asp-for="MonthlyLeaveAllowed" class="text-sm font-medium">Allowed Leave (Days/Month)</label>
+                <input asp-for="MonthlyLeaveAllowed" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-4 pt-4">
+            <a asp-action="Index" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-6 py-2">
+                Cancel
+            </a>
+            <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-8 py-2">
+                Create & Generate Calendar
+            </button>
+        </div>
+    </form>
+</div>
