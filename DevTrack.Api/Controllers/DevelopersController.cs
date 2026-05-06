@@ -23,6 +23,13 @@ public class DevelopersController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetDeveloper(int id)
+    {
+        var result = await _developerService.GetDeveloperByIdAsync(id);
+        return result.IsSuccess ? Ok(result) : NotFound(result);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateDeveloper(DeveloperRequest request)
     {

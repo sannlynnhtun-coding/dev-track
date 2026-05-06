@@ -14,5 +14,6 @@ public class DeveloperApiService : IDeveloperService
     }
 
     public Task<PagedResult<DeveloperResponse>> GetDevelopersAsync(PaginationRequest request) => _api.GetDevelopersAsync(request);
+    public Task<Result<DeveloperDetailResponse>> GetDeveloperByIdAsync(int id) => _api.GetDeveloperByIdAsync(id);
     public Task<Result<DeveloperResponse>> CreateDeveloperAsync(DeveloperRequest request) => _api.CreateDeveloperAsync(request);
 }

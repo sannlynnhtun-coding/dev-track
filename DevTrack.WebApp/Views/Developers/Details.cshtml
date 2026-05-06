@@ -1,0 +1,197 @@
+@model DevTrack.Domain.Features.Developers.Models.DeveloperDetailResponse
+@{
+    ViewData["Title"] = Model.FullName;
+    var attendance = Model.Attendance;
+    var currentBatch = Model.CurrentBatch;
+    var percentWidth = Math.Min(attendance.AttendancePercent, 100);
+}
+
+<div class="space-y-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
+        <div>
+            <div class="flex items-center gap-3">
+                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-lg">
+                    @Model.FullName.Substring(0, Math.Min(2, Model.FullName.Length)).ToUpper()
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight">@Model.FullName</h1>
+                    <p class="text-muted-foreground font-mono text-sm">@Model.DeveloperCode</p>
+                </div>
+            </div>
+        </div>
+        <a asp-action="Index" class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-6 transition-colors">
+            Back to Developers
+        </a>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-3">
+        <div class="rounded-xl border bg-card text-card-foreground shadow p-6 space-y-5">
+            <div>
+                <h2 class="font-semibold leading-none tracking-tight">Profile</h2>
+                <p class="text-sm text-muted-foreground mt-1">Developer contact and account status.</p>
+            </div>
+            <dl class="space-y-4 text-sm">
+                <div>
+                    <dt class="text-muted-foreground">Email</dt>
+                    <dd class="font-medium">@(Model.Email ?? "-")</dd>
+                </div>
+                <div>
+                    <dt class="text-muted-foreground">Phone</dt>
+                    <dd class="font-medium">@(Model.Phone ?? "-")</dd>
+                </div>
+                <div>
+                    <dt class="text-muted-foreground">Status</dt>
+                    <dd class="mt-1">
+                        @if (Model.IsActive)
+                        {
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-emerald-100 text-emerald-800">Active</span>
+                        }
+                        else
+                        {
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-slate-100 text-slate-800">Inactive</span>
+                        }
+                    </dd>
+                </div>
+                <div>
+                    <dt class="text-muted-foreground">Registered</dt>
+                    <dd class="font-medium">@(Model.CreatedAt?.ToString("MMM dd, yyyy") ?? "-")</dd>
+                </div>
+            </dl>
+        </div>
+
+        <div class="rounded-xl border bg-card text-card-foreground shadow p-6 space-y-5">
+            <div>
+                <h2 class="font-semibold leading-none tracking-tight">Current Batch</h2>
+                <p class="text-sm text-muted-foreground mt-1">Latest training assignment for this developer.</p>
+            </div>
+            @if (currentBatch != null)
+            {
+                <div class="space-y-4 text-sm">
+                    <div>
+                        <p class="text-xl font-bold">@currentBatch.BatchName</p>
+                        <p class="text-muted-foreground">@currentBatch.DateRange</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-muted-foreground">Mentor</p>
+                            <p class="font-medium">@(currentBatch.MentorName ?? "-")</p>
+                        </div>
+                        <div>
+                            <p class="text-muted-foreground">Minimum</p>
+                            <p class="font-medium">@(currentBatch.MinAttendancePercent ?? 80)%</p>
+                        </div>
+                    </div>
+                    <a asp-controller="Attendance" asp-action="Schedule" asp-route-batchId="@currentBatch.BatchId" class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 transition-colors">
+                        View Schedule
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+                    This developer is not assigned to a batch yet.
+                </div>
+            }
+        </div>
+
+        <div class="rounded-xl border bg-card text-card-foreground shadow p-6 space-y-5">
+            <div>
+                <h2 class="font-semibold leading-none tracking-tight">Attendance</h2>
+                <p class="text-sm text-muted-foreground mt-1">Eligibility based on current batch class days.</p>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <div class="flex items-end justify-between">
+                        <span class="text-4xl font-black">@attendance.AttendancePercent.ToString("0.0")%</span>
+                        @if (attendance.Status == "Eligible")
+                        {
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-emerald-100 text-emerald-800">Eligible</span>
+                        }
+                        else if (attendance.Status == "Warning")
+                        {
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-amber-100 text-amber-800">Warning</span>
+                        }
+                        else if (attendance.Status == "No Batch")
+                        {
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-slate-100 text-slate-800">No Batch</span>
+                        }
+                        else
+                        {
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-destructive/10 text-destructive">Not Eligible</span>
+                        }
+                    </div>
+                    <div class="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                        <div class="@(attendance.AttendancePercent >= 80 ? "bg-emerald-500" : (attendance.AttendancePercent >= 70 ? "bg-amber-500" : "bg-destructive")) h-full" style="width: @percentWidth%"></div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-sm">
+                    <div class="rounded-lg bg-slate-50 p-3">
+                        <p class="text-muted-foreground">Classes</p>
+                        <p class="text-lg font-bold">@attendance.TotalClasses</p>
+                    </div>
+                    <div class="rounded-lg bg-emerald-50 p-3">
+                        <p class="text-emerald-700">Present</p>
+                        <p class="text-lg font-bold text-emerald-800">@attendance.PresentDays</p>
+                    </div>
+                    <div class="rounded-lg bg-rose-50 p-3">
+                        <p class="text-rose-700">Absent</p>
+                        <p class="text-lg font-bold text-rose-800">@attendance.AbsentDays</p>
+                    </div>
+                    <div class="rounded-lg bg-amber-50 p-3">
+                        <p class="text-amber-700">Leave / Late</p>
+                        <p class="text-lg font-bold text-amber-800">@attendance.LeaveDays / @attendance.LateDays</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rounded-xl border bg-card text-card-foreground shadow overflow-hidden">
+        <div class="p-6 border-b bg-slate-50/50">
+            <h2 class="font-semibold leading-none tracking-tight">Recent Attendance</h2>
+            <p class="text-sm text-muted-foreground mt-1">Latest attendance records for the current batch.</p>
+        </div>
+        <table class="w-full text-sm">
+            <thead class="bg-slate-50 border-b">
+                <tr>
+                    <th class="h-12 px-4 text-left align-middle font-semibold text-muted-foreground">Date</th>
+                    <th class="h-12 px-4 text-left align-middle font-semibold text-muted-foreground">Status</th>
+                    <th class="h-12 px-4 text-left align-middle font-semibold text-muted-foreground">Remark</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y">
+                @if (Model.RecentAttendance.Any())
+                {
+                    @foreach (var item in Model.RecentAttendance)
+                    {
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="p-4 align-middle font-medium">@item.TrainingDate.ToString("MMM dd, yyyy")</td>
+                            <td class="p-4 align-middle">
+                                @{
+                                    var badgeClass = item.Status switch
+                                    {
+                                        "Present" => "bg-emerald-100 text-emerald-800",
+                                        "Absent" => "bg-rose-100 text-rose-800",
+                                        "Leave" => "bg-amber-100 text-amber-800",
+                                        "Late" => "bg-blue-100 text-blue-800",
+                                        _ => "bg-slate-100 text-slate-800"
+                                    };
+                                }
+                                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold @badgeClass">@item.Status</span>
+                            </td>
+                            <td class="p-4 align-middle text-muted-foreground">@(item.Remark ?? "-")</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3" class="p-8 text-center text-muted-foreground">
+                            No attendance records found for this developer.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

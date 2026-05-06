@@ -20,6 +20,17 @@ public class DevelopersController : Controller
         return View(result);
     }
 
+    public async Task<IActionResult> Details(int id)
+    {
+        var result = await _developerService.GetDeveloperByIdAsync(id);
+        if (result.IsFailure || result.Data == null)
+        {
+            return NotFound();
+        }
+
+        return View(result.Data);
+    }
+
     public IActionResult Create()
     {
         return View(new DeveloperRequest());
