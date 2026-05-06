@@ -30,6 +30,13 @@ public class BatchesController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost]
+    public async Task<IActionResult> CreateBatch([FromBody] BatchRequest request)
+    {
+        var result = await _batchService.CreateBatchAsync(request);
+        return Ok(result);
+    }
+
     [HttpGet("{id}/developers")]
     public async Task<IActionResult> GetBatchDevelopers(int id)
     {

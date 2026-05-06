@@ -96,6 +96,19 @@ public class TrainingService : ITrainingService
 
     public async Task<Result> MarkBulkAttendanceAsync(BulkAttendanceRequest request)
     {
+        var calendar = await _db.TrainingCalendars
+            .FirstOrDefaultAsync(c => c.BatchId == request.BatchId && c.TrainingDate == request.TrainingDate);
+
+        if (calendar == null)
+        {
+            return Result.Failure("Date not found in calendar.");
+        }
+
+        if (!(calendar.IsAttendanceRequired ?? false))
+        {
+            return Result.Failure("Attendance can only be marked on class days.");
+        }
+
         var existing = await _db.AttendanceRecords
             .Where(a => a.BatchId == request.BatchId && a.TrainingDate == request.TrainingDate)
             .ToListAsync();

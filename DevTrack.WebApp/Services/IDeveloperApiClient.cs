@@ -10,5 +10,5 @@ public interface IDeveloperApiClient
     Task<PagedResult<DeveloperResponse>> GetDevelopersAsync(PaginationRequest request);
 
     [Post("/api/developers")]
-    Task<Result<DeveloperResponse>> CreateDeveloperAsync(DeveloperRequest request);
+    Task<Result<DeveloperResponse>> CreateDeveloperAsync([Body] DeveloperRequest request);
 }

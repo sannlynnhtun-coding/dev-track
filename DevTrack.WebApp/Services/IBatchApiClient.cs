@@ -13,7 +13,7 @@ public interface IBatchApiClient
     Task<Result<BatchResponse>> GetBatchByIdAsync(int id);
 
     [Post("/api/batches")]
-    Task<Result<BatchResponse>> CreateBatchAsync(BatchRequest request);
+    Task<Result<BatchResponse>> CreateBatchAsync([Body] BatchRequest request);
 
     [Get("/api/batches/{id}/developers")]
     Task<Result<List<BatchAssignmentModel>>> GetBatchDevelopersAsync(int id);

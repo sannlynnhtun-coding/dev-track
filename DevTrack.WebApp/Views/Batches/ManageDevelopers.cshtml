@@ -48,8 +48,11 @@
                 }
                 else
                 {
-                    <div class="bg-white p-12 text-center text-muted-foreground col-span-2">
-                        No active developers available for assignment.
+                    <div class="bg-white p-12 text-center col-span-2">
+                        <p class="text-sm text-muted-foreground">No active developers available for assignment.</p>
+                        <a asp-controller="Developers" asp-action="Create" class="mt-4 inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-6 py-2">
+                            Add Developer
+                        </a>
                     </div>
                 }
             </div>

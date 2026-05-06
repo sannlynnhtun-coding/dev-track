@@ -106,9 +106,15 @@ public class BatchService : IBatchService
             .ToListAsync();
 
         var assignedIds = assigned.Select(a => a.DeveloperId).ToList();
+        var globallyAssignedIds = await _db.BatchDevelopers
+            .Select(bd => bd.DeveloperId)
+            .Distinct()
+            .ToListAsync();
 
         var available = await _db.Developers
-            .Where(d => (d.IsActive ?? true) && !assignedIds.Contains(d.Id))
+            .Where(d => (d.IsActive ?? true) &&
+                        !assignedIds.Contains(d.Id) &&
+                        !globallyAssignedIds.Contains(d.Id))
             .Select(d => new BatchAssignmentModel
             {
                 DeveloperId = d.Id,

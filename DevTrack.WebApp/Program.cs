@@ -4,8 +4,18 @@ using DevTrack.Domain.Features.Batches;
 using DevTrack.Domain.Features.Developers;
 using DevTrack.Domain.Features.Training;
 using DevTrack.Domain.Features.Dashboard;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("logs/webapp-.log", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -49,3 +59,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+Log.CloseAndFlush();
