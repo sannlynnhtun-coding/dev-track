@@ -1,3 +1,4 @@
+using DevTrack.Database;
 using DevTrack.Database.Entities;
 using DevTrack.Domain.Features.Batches;
 using DevTrack.Domain.Features.Developers;
@@ -12,8 +13,19 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var databaseProvider = builder.Configuration.GetValue<string>("DatabaseProvider") ?? "SqlServer";
+
 builder.Services.AddDbContext<DevTrackDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    if (databaseProvider.Equals("InMemory", StringComparison.OrdinalIgnoreCase))
+    {
+        options.UseInMemoryDatabase("DevTrackDb");
+    }
+    else
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    }
+});
 
 // Feature Services
 builder.Services.AddScoped<IBatchService, BatchService>();
@@ -22,6 +34,17 @@ builder.Services.AddScoped<ITrainingService, TrainingService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 var app = builder.Build();
+
+// Ensure Database is Created (for In-Memory)
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<DevTrackDbContext>();
+    if (databaseProvider.Equals("InMemory", StringComparison.OrdinalIgnoreCase))
+    {
+        context.Database.EnsureCreated();
+        DbInitializer.Initialize(context);
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
