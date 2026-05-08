@@ -1,29 +1,13 @@
 services:
   - type: web
-    name: devtrack-api
+    name: devtrack-combined
     env: docker
     dockerContext: .
-    dockerfilePath: DevTrack.Api/Dockerfile
+    dockerfilePath: Dockerfile
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
-      - key: ASPNETCORE_HTTP_PORTS
-        value: "8080"
       - key: DatabaseProvider
         value: InMemory
-
-  - type: web
-    name: devtrack-webapp
-    env: docker
-    dockerContext: .
-    dockerfilePath: DevTrack.WebApp/Dockerfile
-    envVars:
-      - key: ASPNETCORE_ENVIRONMENT
-        value: Production
-      - key: ASPNETCORE_HTTP_PORTS
-        value: "8080"
       - key: ApiSettings__BaseUrl
-        fromService:
-          type: web
-          name: devtrack-api
-          envVarKey: RENDER_EXTERNAL_URL
+        value: http://localhost:5000
