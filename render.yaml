@@ -3,7 +3,7 @@ services:
     name: devtrack-api
     env: docker
     dockerContext: .
-    dockerfilePath: ./DevTrack.Api/Dockerfile
+    dockerfilePath: DevTrack.Api/Dockerfile
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
@@ -16,7 +16,7 @@ services:
     name: devtrack-webapp
     env: docker
     dockerContext: .
-    dockerfilePath: ./DevTrack.WebApp/Dockerfile
+    dockerfilePath: DevTrack.WebApp/Dockerfile
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
