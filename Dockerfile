@@ -1,15 +1,23 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy everything and restore
+# Copy project files for caching
+COPY ["DevTrack.Api/DevTrack.Api.csproj", "DevTrack.Api/"]
+COPY ["DevTrack.WebApp/DevTrack.WebApp.csproj", "DevTrack.WebApp/"]
+COPY ["DevTrack.Domain/DevTrack.Domain.csproj", "DevTrack.Domain/"]
+COPY ["DevTrack.Database/DevTrack.Database.csproj", "DevTrack.Database/"]
+COPY ["DevTrack.Shared/DevTrack.Shared.csproj", "DevTrack.Shared/"]
+
+# Restore projects
+RUN dotnet restore "DevTrack.Api/DevTrack.Api.csproj"
+RUN dotnet restore "DevTrack.WebApp/DevTrack.WebApp.csproj"
+
+# Copy the rest of the source code
 COPY . .
-RUN dotnet restore
 
-# Build Api
-RUN dotnet publish "DevTrack.Api/DevTrack.Api.csproj" -c Release -o /app/api
-
-# Build WebApp
-RUN dotnet publish "DevTrack.WebApp/DevTrack.WebApp.csproj" -c Release -o /app/webapp
+# Publish both projects
+RUN dotnet publish "DevTrack.Api/DevTrack.Api.csproj" -c Release -o /app/api --no-restore
+RUN dotnet publish "DevTrack.WebApp/DevTrack.WebApp.csproj" -c Release -o /app/webapp --no-restore
 
 # Final stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
