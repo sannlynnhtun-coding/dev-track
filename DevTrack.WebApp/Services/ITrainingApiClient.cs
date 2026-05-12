@@ -20,4 +20,7 @@ public interface ITrainingApiClient
 
     [Get("/api/training/batch/{batchId}/summary")]
     Task<PagedResult<AttendanceSummaryResponse>> GetAttendanceSummaryAsync(int batchId, PaginationRequest request);
+
+    [Get("/api/training/batch/{batchId}/summary/full")]
+    Task<Result<List<AttendanceSummaryResponse>>> GetFullAttendanceSummaryAsync(int batchId);
 }

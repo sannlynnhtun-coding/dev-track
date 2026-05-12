@@ -21,6 +21,26 @@ public class HomeController : Controller
         return View(result.Data);
     }
 
+    public async Task<IActionResult> Download()
+    {
+        var result = await _dashboardService.GetDashboardReportAsync();
+        if (!result.IsSuccess || result.Data == null)
+        {
+            return BadRequest("Could not generate report.");
+        }
+
+        var builder = new System.Text.StringBuilder();
+        builder.AppendLine("Batch Name,Mentor,Developers");
+
+        foreach (var item in result.Data)
+        {
+            builder.AppendLine($"{item.BatchName},{item.MentorName},{item.DeveloperCount}");
+        }
+
+        var fileName = $"Dashboard_Report_{DateTime.Now:yyyyMMdd}.csv";
+        return File(System.Text.Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", fileName);
+    }
+
     public IActionResult Privacy()
     {
         return View();

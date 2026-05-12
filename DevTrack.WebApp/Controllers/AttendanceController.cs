@@ -76,4 +76,26 @@ public class AttendanceController : Controller
         ModelState.AddModelError("", result.Message);
         return await Mark(request.BatchId, request.TrainingDate.ToString("yyyy-MM-dd"));
     }
+
+    public async Task<IActionResult> Download(int batchId)
+    {
+        var result = await _trainingService.GetFullAttendanceSummaryAsync(batchId);
+        var batch = await _batchService.GetBatchByIdAsync(batchId);
+
+        if (!result.IsSuccess || result.Data == null)
+        {
+            return BadRequest("Could not generate report.");
+        }
+
+        var builder = new System.Text.StringBuilder();
+        builder.AppendLine("Developer Code,Full Name,Total Classes,Present,Absent,Leave,Attendance %,Status");
+
+        foreach (var item in result.Data)
+        {
+            builder.AppendLine($"{item.DeveloperCode},{item.FullName},{item.TotalClasses},{item.PresentDays},{item.AbsentDays},{item.LeaveDays},{item.AttendancePercent}%,{item.Status}");
+        }
+
+        var fileName = $"Attendance_Report_{batch.Data?.BatchName}_{DateTime.Now:yyyyMMdd}.csv";
+        return File(System.Text.Encoding.UTF8.GetBytes(builder.ToString()), "text/csv", fileName);
+    }
 }

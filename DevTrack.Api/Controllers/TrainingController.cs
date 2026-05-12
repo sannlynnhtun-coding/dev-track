@@ -54,4 +54,11 @@ public class TrainingController : ControllerBase
         var result = await _trainingService.GetAttendanceSummaryAsync(batchId, request);
         return Ok(result);
     }
+
+    [HttpGet("batch/{batchId}/summary/full")]
+    public async Task<IActionResult> GetFullAttendanceSummary(int batchId)
+    {
+        var result = await _trainingService.GetFullAttendanceSummaryAsync(batchId);
+        return Ok(result);
+    }
 }

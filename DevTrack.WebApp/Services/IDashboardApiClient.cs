@@ -8,4 +8,7 @@ public interface IDashboardApiClient
 {
     [Get("/api/dashboard")]
     Task<Result<DashboardResponse>> GetDashboardDataAsync();
+
+    [Get("/api/dashboard/report")]
+    Task<Result<List<BatchSummaryModel>>> GetDashboardReportAsync();
 }

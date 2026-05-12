@@ -20,4 +20,11 @@ public class DashboardController : ControllerBase
         var result = await _dashboardService.GetDashboardDataAsync();
         return Ok(result);
     }
+
+    [HttpGet("report")]
+    public async Task<IActionResult> GetDashboardReport()
+    {
+        var result = await _dashboardService.GetDashboardReportAsync();
+        return Ok(result);
+    }
 }

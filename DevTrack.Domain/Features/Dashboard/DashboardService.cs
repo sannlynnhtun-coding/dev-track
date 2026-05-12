@@ -64,4 +64,20 @@ public class DashboardService : IDashboardService
 
         return Result<DashboardResponse>.Success(response);
     }
+
+    public async Task<Result<List<BatchSummaryModel>>> GetDashboardReportAsync()
+    {
+        var batches = await _db.Batches
+            .OrderByDescending(b => b.CreatedAt)
+            .Select(b => new BatchSummaryModel
+            {
+                Id = b.Id,
+                BatchName = b.BatchName,
+                MentorName = b.MentorName ?? "Unassigned",
+                DeveloperCount = _db.BatchDevelopers.Count(bd => bd.BatchId == b.Id)
+            })
+            .ToListAsync();
+
+        return Result<List<BatchSummaryModel>>.Success(batches);
+    }
 }

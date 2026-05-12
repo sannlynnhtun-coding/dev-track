@@ -14,4 +14,6 @@ public class DashboardApiService : IDashboardService
     }
 
     public Task<Result<DashboardResponse>> GetDashboardDataAsync() => _api.GetDashboardDataAsync();
+
+    public Task<Result<List<BatchSummaryModel>>> GetDashboardReportAsync() => _api.GetDashboardReportAsync();
 }

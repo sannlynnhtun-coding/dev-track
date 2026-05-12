@@ -180,4 +180,44 @@ public class TrainingService : ITrainingService
         var pagination = new Pagination(request.PageNumber, request.PageSize, totalCount);
         return PagedResult<AttendanceSummaryResponse>.Success(result, pagination);
     }
+
+    public async Task<Result<List<AttendanceSummaryResponse>>> GetFullAttendanceSummaryAsync(int batchId)
+    {
+        var totalClasses = await _db.TrainingCalendars
+            .CountAsync(c => c.BatchId == batchId && (c.IsAttendanceRequired ?? false));
+
+        var developers = await _db.BatchDevelopers
+            .Where(bd => bd.BatchId == batchId)
+            .Select(bd => new { bd.Developer.Id, bd.Developer.FullName, bd.Developer.DeveloperCode })
+            .OrderBy(bd => bd.FullName)
+            .ToListAsync();
+
+        var attendance = await _db.AttendanceRecords
+            .Where(a => a.BatchId == batchId)
+            .ToListAsync();
+
+        var result = new List<AttendanceSummaryResponse>();
+
+        foreach (var dev in developers)
+        {
+            var devAttendance = attendance.Where(a => a.DeveloperId == dev.Id).ToList();
+            var presentCount = devAttendance.Count(a => a.Status == "Present");
+            var percent = totalClasses > 0 ? (decimal)presentCount * 100 / totalClasses : 0;
+
+            result.Add(new AttendanceSummaryResponse
+            {
+                DeveloperId = dev.Id,
+                FullName = dev.FullName,
+                DeveloperCode = dev.DeveloperCode,
+                TotalClasses = totalClasses,
+                PresentDays = presentCount,
+                AbsentDays = devAttendance.Count(a => a.Status == "Absent"),
+                LeaveDays = devAttendance.Count(a => a.Status == "Leave"),
+                AttendancePercent = Math.Round(percent, 2),
+                Status = percent >= 80 ? "Eligible" : (percent >= 70 ? "Warning" : "Not Eligible")
+            });
+        }
+
+        return Result<List<AttendanceSummaryResponse>>.Success(result);
+    }
 }

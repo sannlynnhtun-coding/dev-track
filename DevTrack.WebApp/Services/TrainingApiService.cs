@@ -23,4 +23,6 @@ public class TrainingApiService : ITrainingService
     public Task<Result> MarkBulkAttendanceAsync(BulkAttendanceRequest request) => _api.MarkBulkAttendanceAsync(request);
     
     public Task<PagedResult<AttendanceSummaryResponse>> GetAttendanceSummaryAsync(int batchId, PaginationRequest request) => _api.GetAttendanceSummaryAsync(batchId, request);
+
+    public Task<Result<List<AttendanceSummaryResponse>>> GetFullAttendanceSummaryAsync(int batchId) => _api.GetFullAttendanceSummaryAsync(batchId);
 }

@@ -6,4 +6,5 @@ namespace DevTrack.Domain.Features.Dashboard;
 public interface IDashboardService
 {
     Task<Result<DashboardResponse>> GetDashboardDataAsync();
+    Task<Result<List<BatchSummaryModel>>> GetDashboardReportAsync();
 }
