@@ -12,6 +12,32 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
+@layer utilities {
+    .premium-card {
+        @apply bg-white border border-slate-200/60 shadow-sm hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20 transition-all duration-300 rounded-2xl;
+    }
+    .text-balance {
+        text-wrap: balance;
+    }
+    .shadow-premium {
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 4px 10px -5px rgba(0, 0, 0, 0.02);
+    }
+    .text-gradient {
+        @apply bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-slate-600;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+}
+
 html {
   position: relative;
   min-height: 100%;

@@ -3,48 +3,52 @@
     ViewData["Title"] = "Add Developer";
 }
 
-<div class="max-w-2xl mx-auto space-y-8">
-    <div>
-        <h1 class="text-3xl font-bold tracking-tight">Add Developer</h1>
-        <p class="text-muted-foreground">Register a new trainee in the system.</p>
+<div class="max-w-2xl mx-auto space-y-10 animate-in">
+    <div class="border-b border-slate-100 pb-8">
+        <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 text-center text-gradient">Register Developer</h1>
+        <p class="text-lg text-slate-500 mt-2 text-center">Enroll a new trainee into the DevTrack ecosystem.</p>
     </div>
 
-    <form asp-action="Create" method="post" class="space-y-6">
-        <div class="rounded-xl border bg-card text-card-foreground shadow p-6 space-y-4">
-            <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                    <label class="text-sm font-medium leading-none" for="DeveloperCode">Developer Code</label>
-                    <input asp-for="DeveloperCode" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" placeholder="DEV-001" />
+    <form asp-action="Create" method="post" class="space-y-10">
+        <div class="premium-card p-10 space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-3">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400" for="DeveloperCode">System ID</label>
+                    <input asp-for="DeveloperCode" class="flex h-14 w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 py-4 text-base font-bold shadow-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none" placeholder="DEV-001" />
                 </div>
-                <div class="space-y-2">
-                    <label class="text-sm font-medium leading-none" for="FullName">Full Name</label>
-                    <input asp-for="FullName" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" placeholder="John Doe" />
+                <div class="space-y-3">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400" for="FullName">Full Identity</label>
+                    <input asp-for="FullName" class="flex h-14 w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 py-4 text-base font-bold shadow-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none" placeholder="John Doe" />
                 </div>
             </div>
 
-            <div class="space-y-2">
-                <label class="text-sm font-medium leading-none" for="Email">Email Address</label>
-                <input asp-for="Email" type="email" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" placeholder="john.doe@example.com" />
+            <div class="space-y-3">
+                <label class="text-xs font-black uppercase tracking-widest text-slate-400" for="Email">Electronic Mail</label>
+                <input asp-for="Email" type="email" class="flex h-14 w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 py-4 text-base font-bold shadow-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none" placeholder="john.doe@example.com" />
             </div>
 
-            <div class="space-y-2">
-                <label class="text-sm font-medium leading-none" for="Phone">Phone Number</label>
-                <input asp-for="Phone" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" placeholder="+1234567890" />
+            <div class="space-y-3">
+                <label class="text-xs font-black uppercase tracking-widest text-slate-400" for="Phone">Contact Number</label>
+                <input asp-for="Phone" class="flex h-14 w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 py-4 text-base font-bold shadow-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none" placeholder="+1234567890" />
             </div>
 
-            <div class="flex items-center space-x-2 py-4">
-                <input asp-for="IsActive" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" id="isActive" checked />
-                <label for="isActive" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Mark as Active</label>
+            <div class="pt-6 border-t border-slate-50">
+                <label class="relative flex items-center gap-4 cursor-pointer group">
+                    <input asp-for="IsActive" type="checkbox" class="peer sr-only" id="isActive" checked />
+                    <div class="w-14 h-8 bg-slate-200 rounded-full peer-checked:bg-emerald-500 transition-colors relative after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:after:translate-x-6"></div>
+                    <span class="text-sm font-bold text-slate-600 group-hover:text-slate-900 transition-colors">Authorize Access Immediately</span>
+                </label>
             </div>
         </div>
 
-        <div class="flex items-center gap-4">
-            <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-8 py-2">
-                Save Developer
-            </button>
-            <a asp-action="Index" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-8 py-2">
-                Cancel
+        <div class="flex items-center justify-center gap-6 pt-4">
+            <a asp-action="Index" class="inline-flex items-center justify-center rounded-2xl text-base font-bold transition-all border-2 border-slate-100 bg-white hover:bg-slate-50 h-14 px-12">
+                Discard
             </a>
+            <button type="submit" class="inline-flex items-center justify-center rounded-2xl text-base font-bold transition-all bg-primary text-white shadow-2xl shadow-primary/20 hover:bg-primary/90 h-14 px-16 active:scale-95">
+                Save & Enlist
+            </button>
         </div>
     </form>
 </div>
+

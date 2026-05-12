@@ -12,28 +12,43 @@
         @@layer base {
             :root {
                 --background: 0 0% 100%;
-                --foreground: 222.2 84% 4.9%;
+                --foreground: 0 0% 3.9%;
                 --card: 0 0% 100%;
-                --card-foreground: 222.2 84% 4.9%;
+                --card-foreground: 0 0% 3.9%;
                 --popover: 0 0% 100%;
-                --popover-foreground: 222.2 84% 4.9%;
-                --primary: 221.2 83.2% 53.3%;
-                --primary-foreground: 210 40% 98%;
-                --secondary: 210 40% 96.1%;
-                --secondary-foreground: 222.2 47.4% 11.2%;
-                --muted: 210 40% 96.1%;
-                --muted-foreground: 215.4 16.3% 46.9%;
-                --accent: 210 40% 96.1%;
-                --accent-foreground: 222.2 47.4% 11.2%;
+                --popover-foreground: 0 0% 3.9%;
+                --primary: 0 72.2% 50.6%;
+                --primary-foreground: 0 85.7% 97.3%;
+                --secondary: 0 0% 96.1%;
+                --secondary-foreground: 0 0% 9%;
+                --muted: 0 0% 96.1%;
+                --muted-foreground: 0 0% 45.1%;
+                --accent: 0 0% 96.1%;
+                --accent-foreground: 0 0% 9%;
                 --destructive: 0 84.2% 60.2%;
-                --destructive-foreground: 210 40% 98%;
-                --border: 214.3 31.8% 91.4%;
-                --input: 214.3 31.8% 91.4%;
-                --ring: 221.2 83.2% 53.3%;
-                --radius: 0.5rem;
+                --destructive-foreground: 0 0% 98%;
+                --border: 0 0% 89.8%;
+                --input: 0 0% 89.8%;
+                --ring: 0 72.2% 50.6%;
+                --radius: 0.75rem;
             }
             body {
-                @@apply bg-slate-50 text-slate-900 font-['Inter'];
+                @@apply bg-[#fafafa] text-slate-900 font-['Inter'] selection:bg-primary/20 selection:text-primary;
+                background-image: 
+                    radial-gradient(at 0% 0%, hsla(0, 72%, 51%, 0.03) 0px, transparent 50%),
+                    radial-gradient(at 100% 0%, hsla(0, 72%, 51%, 0.03) 0px, transparent 50%);
+            }
+        }
+        @@layer components {
+            .glass {
+                @@apply bg-white/80 backdrop-blur-md border-b border-white/20;
+            }
+            .animate-in {
+                animation: animate-in 0.5s ease-out forwards;
+            }
+            @@keyframes animate-in {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
             }
         }
     </style>
@@ -83,25 +98,36 @@
     </script>
 </head>
 <body class="min-h-screen flex flex-col">
-    <header class="bg-white border-b sticky top-0 z-50">
+    <header class="glass sticky top-0 z-50 transition-all duration-300">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center gap-8">
-                    <a class="flex items-center gap-2 font-bold text-xl tracking-tight text-primary" asp-controller="Home" asp-action="Index">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-activity"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                        <span>DevTrack</span>
+                <div class="flex items-center gap-10">
+                    <a class="flex items-center gap-2.5 font-bold text-2xl tracking-tight text-primary group" asp-controller="Home" asp-action="Index">
+                        <div class="p-1.5 rounded-lg bg-primary/10 text-primary group-hover:scale-110 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-activity"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        </div>
+                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">DevTrack</span>
                     </a>
-                    <div class="hidden sm:flex items-center gap-6">
-                        <a class="text-sm font-medium hover:text-primary transition-colors" asp-controller="Batches" asp-action="Index">Batches</a>
-                        <a class="text-sm font-medium hover:text-primary transition-colors" asp-controller="Developers" asp-action="Index">Developers</a>
-                        <a class="text-sm font-medium hover:text-primary transition-colors" asp-controller="Attendance" asp-action="Index">Attendance</a>
+                    <div class="hidden sm:flex items-center gap-8">
+                        <a class="text-[15px] font-medium text-slate-600 hover:text-primary transition-colors relative group py-2" asp-controller="Batches" asp-action="Index">
+                            Batches
+                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
+                        </a>
+                        <a class="text-[15px] font-medium text-slate-600 hover:text-primary transition-colors relative group py-2" asp-controller="Developers" asp-action="Index">
+                            Developers
+                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
+                        </a>
+                        <a class="text-[15px] font-medium text-slate-600 hover:text-primary transition-colors relative group py-2" asp-controller="Attendance" asp-action="Index">
+                            Attendance
+                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
+                        </a>
                     </div>
                 </div>
-                <div class="flex items-center gap-4">
-                    <button class="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors shadow-sm">
+                <div class="flex items-center gap-5">
+                    <a asp-controller="Batches" asp-action="Create" class="bg-primary text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95 shadow-sm inline-flex items-center">
                         New Batch
-                    </button>
-                    <div class="h-8 w-8 rounded-full bg-slate-200 border flex items-center justify-center text-xs font-bold text-slate-600">
+                    </a>
+                    <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 border-2 border-white shadow-sm flex items-center justify-center text-sm font-bold text-slate-700 cursor-pointer hover:border-primary/30 transition-colors">
                         SA
                     </div>
                 </div>

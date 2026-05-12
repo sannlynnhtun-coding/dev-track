@@ -3,78 +3,89 @@
     ViewData["Title"] = "Create Training Batch";
 }
 
-<div class="max-w-2xl mx-auto">
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold tracking-tight">Create Batch</h1>
-        <p class="text-muted-foreground mt-2">Initialize a new training session and generate its calendar automatically.</p>
+<div class="max-w-3xl mx-auto space-y-10 animate-in">
+    <div class="border-b border-slate-100 pb-8">
+        <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 text-center">Initialize New Batch</h1>
+        <p class="text-lg text-slate-500 mt-2 text-center">Set up your training parameters and generate a smart calendar.</p>
     </div>
 
-    <form asp-action="Create" method="post" class="space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-2 col-span-2">
-                <label asp-for="BatchName" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Batch Name</label>
-                <input asp-for="BatchName" placeholder="e.g. .NET Full Stack Batch 01" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
-                <span asp-validation-for="BatchName" class="text-xs text-destructive"></span>
+    <form asp-action="Create" method="post" class="space-y-10">
+        <div class="premium-card p-10 space-y-10">
+            <!-- Section: Basic Info -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-3 col-span-2">
+                    <label asp-for="BatchName" class="text-xs font-black uppercase tracking-widest text-slate-400">Batch Designation</label>
+                    <input asp-for="BatchName" placeholder="e.g. Full Stack .NET Core - Spring 2024" class="flex h-14 w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 py-4 text-base font-bold shadow-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none" />
+                    <span asp-validation-for="BatchName" class="text-xs text-rose-500 font-bold"></span>
+                </div>
+
+                <div class="space-y-3">
+                    <label asp-for="MentorName" class="text-xs font-black uppercase tracking-widest text-slate-400">Primary Mentor</label>
+                    <input asp-for="MentorName" placeholder="Lead Instructor Name" class="flex h-14 w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 py-4 text-base font-bold shadow-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none" />
+                </div>
+
+                <div class="space-y-3">
+                    <label asp-for="TrainingMonths" class="text-xs font-black uppercase tracking-widest text-slate-400">Duration (Months)</label>
+                    <input asp-for="TrainingMonths" type="text" inputmode="numeric" pattern="[0-9]*" class="js-number-only flex h-14 w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 py-4 text-base font-bold shadow-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none" />
+                </div>
+
+                <div class="space-y-3">
+                    <label for="StartDateInput" class="text-xs font-black uppercase tracking-widest text-slate-400">Commencement Date</label>
+                    <input id="StartDateInput" type="text" value="@Model.StartDate.ToString("dd-MM-yyyy")" inputmode="numeric" maxlength="10" placeholder="DD-MM-YYYY" data-date-target="StartDate" class="js-date-mask flex h-14 w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 py-4 text-base font-bold shadow-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none" />
+                    <input asp-for="StartDate" type="hidden" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+                </div>
+
+                <div class="space-y-3">
+                    <label for="EndDateInput" class="text-xs font-black uppercase tracking-widest text-slate-400">Completion Date</label>
+                    <input id="EndDateInput" type="text" value="@Model.EndDate.ToString("dd-MM-yyyy")" inputmode="numeric" maxlength="10" placeholder="DD-MM-YYYY" data-date-target="EndDate" class="js-date-mask flex h-14 w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 py-4 text-base font-bold shadow-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none" />
+                    <input asp-for="EndDate" type="hidden" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+                </div>
             </div>
 
-            <div class="space-y-2">
-                <label asp-for="MentorName" class="text-sm font-medium">Mentor Name</label>
-                <input asp-for="MentorName" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
-            </div>
-
-            <div class="space-y-2">
-                <label asp-for="TrainingMonths" class="text-sm font-medium">Duration (Months)</label>
-                <input asp-for="TrainingMonths" type="text" inputmode="numeric" pattern="[0-9]*" class="js-number-only flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
-            </div>
-
-            <div class="space-y-2">
-                <label for="StartDateInput" class="text-sm font-medium">Start Date</label>
-                <input id="StartDateInput" type="text" value="@Model.StartDate.ToString("dd-MM-yyyy")" inputmode="numeric" maxlength="10" placeholder="dd-mm-yyyy" data-date-target="StartDate" class="js-date-mask flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
-                <input asp-for="StartDate" type="hidden" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
-            </div>
-
-            <div class="space-y-2">
-                <label for="EndDateInput" class="text-sm font-medium">End Date</label>
-                <input id="EndDateInput" type="text" value="@Model.EndDate.ToString("dd-MM-yyyy")" inputmode="numeric" maxlength="10" placeholder="dd-mm-yyyy" data-date-target="EndDate" class="js-date-mask flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
-                <input asp-for="EndDate" type="hidden" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
-            </div>
-        </div>
-
-        <div class="space-y-4 rounded-lg border p-4 bg-slate-50/50">
-            <label class="text-sm font-medium">Training Days Configuration</label>
-            <div class="flex flex-wrap gap-3">
-                @{
-                    var days = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>().ToList();
-                    // Shift Sunday to end if needed, but let's keep it simple
-                    foreach (var day in days)
-                    {
-                        <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-md border cursor-pointer hover:border-primary transition-colors">
-                            <input type="checkbox" name="SelectedDays" value="@day" class="rounded text-primary" />
-                            <span class="text-sm font-medium">@day.ToString().Substring(0, 3)</span>
-                        </label>
+            <!-- Section: Schedule Configuration -->
+            <div class="space-y-6 pt-6 border-t border-slate-50">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-black uppercase tracking-widest text-slate-400">Weekly Training Schedule</label>
+                    <span class="text-[10px] text-primary font-bold uppercase tracking-widest bg-primary/5 px-2 py-1 rounded-md">Attendance Required</span>
+                </div>
+                <div class="flex flex-wrap gap-4">
+                    @{
+                        var days = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>().ToList();
+                        foreach (var day in days)
+                        {
+                            <label class="relative flex-1 min-w-[80px] group cursor-pointer">
+                                <input type="checkbox" name="SelectedDays" value="@day" class="peer sr-only" />
+                                <div class="h-16 flex items-center justify-center rounded-2xl border-2 border-slate-100 bg-white peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:border-slate-200 shadow-sm">
+                                    <span class="text-xs font-black uppercase tracking-widest text-slate-400 peer-checked:text-primary transition-colors">@day.ToString().Substring(0, 3)</span>
+                                </div>
+                                <div class="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center opacity-0 peer-checked:opacity-100 transition-opacity shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                </div>
+                            </label>
+                        }
                     }
-                }
+                </div>
             </div>
-            <p class="text-[10px] text-muted-foreground italic">Selected days will be marked as "Class Days" in the generated calendar. Attendance will be required for these days.</p>
+
+            <!-- Section: Policies -->
+            <div class="grid grid-cols-2 gap-8 pt-6 border-t border-slate-50">
+                <div class="space-y-3">
+                    <label asp-for="MinAttendancePercent" class="text-xs font-black uppercase tracking-widest text-slate-400">Eligibility Threshold (%)</label>
+                    <input asp-for="MinAttendancePercent" type="number" class="flex h-14 w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 py-4 text-base font-bold shadow-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none" />
+                </div>
+                <div class="space-y-3">
+                    <label asp-for="MonthlyLeaveAllowed" class="text-xs font-black uppercase tracking-widest text-slate-400">Monthly Leave Quota</label>
+                    <input asp-for="MonthlyLeaveAllowed" type="number" class="flex h-14 w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 py-4 text-base font-bold shadow-sm focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all outline-none" />
+                </div>
+            </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-6">
-            <div class="space-y-2">
-                <label asp-for="MinAttendancePercent" class="text-sm font-medium">Target Attendance %</label>
-                <input asp-for="MinAttendancePercent" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
-            </div>
-            <div class="space-y-2">
-                <label asp-for="MonthlyLeaveAllowed" class="text-sm font-medium">Allowed Leave (Days/Month)</label>
-                <input asp-for="MonthlyLeaveAllowed" type="number" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
-            </div>
-        </div>
-
-        <div class="flex items-center justify-end gap-4 pt-4">
-            <a asp-action="Index" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-10 px-6 py-2">
-                Cancel
+        <div class="flex items-center justify-center gap-6 pt-4">
+            <a asp-action="Index" class="inline-flex items-center justify-center rounded-2xl text-base font-bold transition-all border-2 border-slate-100 bg-white hover:bg-slate-50 h-14 px-12">
+                Discard
             </a>
-            <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 px-8 py-2">
-                Create & Generate Calendar
+            <button type="submit" class="inline-flex items-center justify-center rounded-2xl text-base font-bold transition-all bg-slate-900 text-white shadow-2xl hover:bg-slate-800 h-14 px-16 active:scale-95">
+                Generate Batch & Calendar
             </button>
         </div>
     </form>
@@ -116,3 +127,4 @@
         })();
     </script>
 }
+
