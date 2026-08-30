@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using DevTrack.Domain.Features.Dashboard;
 using DevTrack.Shared;
 using DevTrack.WebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DevTrack.WebApp.Controllers;
 
@@ -46,6 +47,7 @@ public class HomeController : Controller
         return View();
     }
 
+    [AllowAnonymous]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

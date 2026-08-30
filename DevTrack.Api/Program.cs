@@ -4,11 +4,29 @@ using DevTrack.Domain.Features.Batches;
 using DevTrack.Domain.Features.Developers;
 using DevTrack.Domain.Features.Training;
 using DevTrack.Domain.Features.Dashboard;
+using DevTrack.Shared.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddOptions<JwtOptions>()
+    .Bind(builder.Configuration.GetSection(JwtOptions.SectionName))
+    .Validate(options => options.IsValid(), "Jwt must include Issuer, Audience, a SigningKey of at least 32 characters, and a positive ExpiresMinutes value.")
+    .ValidateOnStart();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer();
+
+builder.Services.ConfigureOptions<DevTrack.Api.Auth.ConfigureJwtBearerOptions>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(AuthConstants.AdminOnlyPolicy, policy =>
+        policy.RequireAuthenticatedUser().RequireRole(AuthConstants.AdminRole));
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -55,8 +73,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapControllers().RequireAuthorization(AuthConstants.AdminOnlyPolicy);
 
 app.Run();

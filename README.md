@@ -38,6 +38,8 @@ The solution is divided into five main projects to ensure a clean separation of 
 ### Configuration
 1. **Database**: Update the connection string in `DevTrack.Api/appsettings.json`.
 2. **API URL**: Update the `ApiSettings:BaseUrl` in `DevTrack.WebApp/appsettings.json` to match the API's hosting URL.
+3. **Admin login**: Configure `AdminAuth:Username`, `AdminAuth:Password`, and `AdminAuth:DisplayName` for `DevTrack.WebApp` through user secrets or environment variables.
+4. **JWT**: Configure the same `Jwt:Issuer`, `Jwt:Audience`, and `Jwt:SigningKey` in both `DevTrack.WebApp` and `DevTrack.Api`. Use a signing key with at least 32 characters and keep production keys out of committed appsettings files.
 
 ### Running the Application
 1. Start the **DevTrack.Api** project.
