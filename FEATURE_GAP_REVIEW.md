@@ -1,7 +1,7 @@
 # DevTrack Feature Gap Review
 
 **Source of truth:** [User Stories.md](User%20Stories.md)  
-**Scope:** `DevTrack.WebApp` (MVC + Refit), `DevTrack.Api` (HTTP API), `DevTrack.Domain` (services), `DevTrack.Database` (EF entities)  
+**Scope:** `DevTrack.WebApp` (MVC + IHttpClientFactory), `DevTrack.Api` (HTTP API), `DevTrack.Domain` (services), `DevTrack.Database` (EF entities)  
 **Date:** 2026-05-06
 
 This document maps each user story to the current implementation and calls out **missing**, **partial**, or **contract/behavior** gaps. It is a read-only assessment; it does not change product behavior.
@@ -32,7 +32,7 @@ This document maps each user story to the current implementation and calls out *
 
 | # | Story | Status | Notes |
 |---|--------|--------|--------|
-| **1** | Create Training Batch | **Partial** | **Domain:** `BatchService.CreateBatchAsync` creates batch + calendar. **WebApp:** `BatchesController.Create` posts to `IBatchService` → Refit `CreateBatchAsync`. **API:** [`DevTrack.Api/Controllers/BatchesController.cs`](DevTrack.Api/Controllers/BatchesController.cs) has **no** `POST` create endpoint—Refit call will fail against API-only deployments. Create form captures duration via `TrainingMonths`; **DaysPerWeek** exists on entity/request but is not surfaced consistently in UI vs story wording (“teaching days per week”). |
+| **1** | Create Training Batch | **Partial** | **Domain:** `BatchService.CreateBatchAsync` creates batch + calendar. **WebApp:** `BatchesController.Create` posts to `IBatchService`, which calls the API through `IHttpClientFactory`-backed clients. Create form captures duration via `TrainingMonths`; **DaysPerWeek** exists on entity/request but is not surfaced consistently in UI vs story wording (“teaching days per week”). |
 | **2** | Assign Developers to Batch | **Partial** | **Implemented:** `ManageDevelopers` UI, `UpdateBatchAssignmentsAsync` replaces links for one batch. **Missing:** Enforcing **one developer → one batch** globally (no unique constraint on `DeveloperId` in `BatchDeveloper`; reassignment across batches not validated). |
 | **3** | Configure Training Calendar | **Partial** | **Implemented:** Read-only schedule in [`Views/Attendance/Schedule.cshtml`](DevTrack.WebApp/Views/Attendance/Schedule.cshtml) using `TrainingCalendar` rows; badges support multiple day types if data existed. **Missing:** No POST/PATCH to edit day type, assignment title/due date, or close days after generation. `TrainingCalendarRequest` in [`TrainingModels.cs`](DevTrack.Domain/Features/Training/Models/TrainingModels.cs) is **unused**. Generation only produces **Class Day** vs **Holiday** (see `GenerateCalendarAsync` in [`BatchService.cs`](DevTrack.Domain/Features/Batches/BatchService.cs)). |
 | **4** | Mark Attendance | **Partial** | **Implemented:** Bulk mark UI [`Views/Attendance/Mark.cshtml`](DevTrack.WebApp/Views/Attendance/Mark.cshtml), API [`TrainingController`](DevTrack.Api/Controllers/TrainingController.cs), persistence in [`TrainingService.MarkBulkAttendanceAsync`](DevTrack.Domain/Features/Training/TrainingService.cs). **Missing:** Server-side guarantee that marking is only on **class days** (`IsAttendanceRequired`); records can be written for any calendar date found. |

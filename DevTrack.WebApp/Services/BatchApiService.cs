@@ -2,7 +2,6 @@ using DevTrack.Domain.Features.Batches;
 using DevTrack.Domain.Features.Batches.Models;
 using DevTrack.Shared;
 using Microsoft.Extensions.Logging;
-using Refit;
 using System.Text.Json;
 
 namespace DevTrack.WebApp.Services;
@@ -34,17 +33,9 @@ public class BatchApiService : IBatchService
                 result.IsSuccess, result.Message);
             return result;
         }
-        catch (ValidationApiException ex)
+        catch (HttpRequestException ex)
         {
-            var apiMessage = GetReadableApiError(ex.Content) ?? ex.Message;
-            _logger.LogError(ex,
-                "CreateBatch validation failed. BatchName={BatchName}, ApiMessage={ApiMessage}",
-                request.BatchName, apiMessage);
-            return Result<BatchResponse>.Failure(apiMessage);
-        }
-        catch (ApiException ex)
-        {
-            var apiMessage = GetReadableApiError(ex.Content ?? ex.Message);
+            var apiMessage = GetReadableApiError(ex.Message);
             _logger.LogError(ex,
                 "CreateBatch API exception. BatchName={BatchName}, StatusCode={StatusCode}, ApiMessage={ApiMessage}",
                 request.BatchName, ex.StatusCode, apiMessage);
@@ -53,26 +44,6 @@ public class BatchApiService : IBatchService
     }
     public Task<Result<List<BatchAssignmentModel>>> GetBatchDevelopersAsync(int batchId) => _api.GetBatchDevelopersAsync(batchId);
     public Task<Result> UpdateBatchAssignmentsAsync(int batchId, List<int> selectedDeveloperIds) => _api.UpdateBatchAssignmentsAsync(batchId, selectedDeveloperIds);
-
-    private static string? GetReadableApiError(Refit.ProblemDetails? details)
-    {
-        if (details == null)
-        {
-            return null;
-        }
-
-        if (!string.IsNullOrWhiteSpace(details.Detail))
-        {
-            return details.Detail;
-        }
-
-        if (!string.IsNullOrWhiteSpace(details.Title))
-        {
-            return details.Title;
-        }
-
-        return null;
-    }
 
     private static string GetReadableApiError(string rawMessage)
     {

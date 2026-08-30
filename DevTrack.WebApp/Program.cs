@@ -1,4 +1,3 @@
-using Refit;
 using DevTrack.WebApp.Services;
 using DevTrack.Domain.Features.Batches;
 using DevTrack.Domain.Features.Developers;
@@ -22,15 +21,16 @@ builder.Services.AddControllersWithViews();
 
 var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"] ?? "https://localhost:7267";
 
-// Register Refit Clients
-builder.Services.AddRefitClient<IBatchApiClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(apiBaseUrl));
-builder.Services.AddRefitClient<IDeveloperApiClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(apiBaseUrl));
-builder.Services.AddRefitClient<ITrainingApiClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(apiBaseUrl));
-builder.Services.AddRefitClient<IDashboardApiClient>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(apiBaseUrl));
+// Register HTTP API clients
+builder.Services.AddHttpClient(ApiClientBase.ClientName, client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+
+builder.Services.AddScoped<IBatchApiClient, BatchApiClient>();
+builder.Services.AddScoped<IDeveloperApiClient, DeveloperApiClient>();
+builder.Services.AddScoped<ITrainingApiClient, TrainingApiClient>();
+builder.Services.AddScoped<IDashboardApiClient, DashboardApiClient>();
 
 // Feature Services (Api Versions)
 builder.Services.AddScoped<IBatchService, BatchApiService>();
