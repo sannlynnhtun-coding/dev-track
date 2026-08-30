@@ -1,6 +1,6 @@
 # DevTrack Management System
 
-DevTrack is a comprehensive management system designed to track training batches, developers, and attendance. It is built using a modern, decoupled architecture with .NET 8, following the **Result Pattern** and leveraging **IHttpClientFactory** for API-driven communication.
+DevTrack is a comprehensive management system designed to track training batches, developers, and attendance. It is built using a modern, decoupled architecture with .NET 10, following the **Result Pattern** and leveraging **IHttpClientFactory** for API-driven communication.
 
 ## Project Structure
 
@@ -32,7 +32,7 @@ The solution is divided into five main projects to ensure a clean separation of 
 ## Getting Started
 
 ### Prerequisites
-- .NET 8 SDK
+- .NET 10 SDK (`10.0.400` or a compatible newer feature band)
 - SQL Server
 
 ### Configuration
@@ -47,7 +47,7 @@ The solution is divided into five main projects to ensure a clean separation of 
 3. Access the system via the WebApp URL.
 
 ## Technology Stack
-- **Framework**: .NET 8 (C#)
+- **Framework**: .NET 10 (C# 14)
 - **Database**: SQL Server with EF Core
 - **API Client**: IHttpClientFactory
 - **Frontend**: ASP.NET Core MVC with modern CSS styling

@@ -1,7 +1,8 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 # Copy project files for caching
+COPY ["global.json", "./"]
 COPY ["DevTrack.Api/DevTrack.Api.csproj", "DevTrack.Api/"]
 COPY ["DevTrack.WebApp/DevTrack.WebApp.csproj", "DevTrack.WebApp/"]
 COPY ["DevTrack.Domain/DevTrack.Domain.csproj", "DevTrack.Domain/"]
@@ -20,7 +21,7 @@ RUN dotnet publish "DevTrack.Api/DevTrack.Api.csproj" -c Release -o /app/api --n
 RUN dotnet publish "DevTrack.WebApp/DevTrack.WebApp.csproj" -c Release -o /app/webapp --no-restore
 
 # Final stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 COPY --from=build /app/api ./api
 COPY --from=build /app/webapp ./webapp

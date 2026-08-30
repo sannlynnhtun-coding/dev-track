@@ -43,7 +43,7 @@
                                 <td class="p-6 align-middle">
                                     <div class="flex items-center gap-2">
                                         <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">
-                                            @batch.MentorName.Substring(0, 1)
+                                            @(string.IsNullOrWhiteSpace(batch.MentorName) ? "?" : batch.MentorName[..1])
                                         </div>
                                         <span class="text-slate-600 font-medium">@batch.MentorName</span>
                                     </div>
@@ -84,7 +84,7 @@
             </table>
         </div>
         <div class="p-6 border-t border-slate-50 bg-slate-50/30">
-            <partial name="_Pagination" model="Model.Pagination" />
+            <partial name="_Pagination" model="Model!.Pagination" />
         </div>
     </div>
 </div>
